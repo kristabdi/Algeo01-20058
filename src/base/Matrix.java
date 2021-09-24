@@ -49,10 +49,47 @@ public class Matrix {
     public int getRow() {
         return row;
     }
+    // Sifat
+    public boolean isSquare() {
+        return (row==col);
+    }
     // Method
     public double getDeterminantCofactor() {
-        elements[0][0] += 1;
-        return elements[0][0];
+        if (isSquare()) {
+            double det = 0.0;
+            int rowSmallMtr = 0;
+            int colSmallMtr = 0;
+
+            if (row == 1) {
+                return getElmt(0,0);
+            } else if (row == 2) {
+                return ((getElmt(0,0)*getElmt(1,1)) - (getElmt(1,0)*getElmt(0,1)));
+            } else {
+                for (int j=0; j<row; j++) {
+                    Matrix smallMtr = new Matrix(row-1,col-1);
+                    rowSmallMtr = 0;
+                    colSmallMtr = 0;
+                    for (int p=1; p<row; p++) {
+                        for (int q=0; q<col; q++) {
+                            if (q!=j) {
+                                smallMtr.setElmt(rowSmallMtr, colSmallMtr, getElmt(q,p));
+                                rowSmallMtr+=1;
+                            }
+                        }
+                        colSmallMtr += 1;
+                        rowSmallMtr = 0;
+                    }
+                    if (j%2==0) {
+                        det += getElmt(j,0) * smallMtr.getDeterminantCofactor();
+                    } else {
+                        det += getElmt(j,0) * smallMtr.getDeterminantCofactor()  * -1;
+                    }
+                }
+            }
+            return det;
+        } else {
+            return -9999.000;
+        }
     }
     public double getDeterminantOBE() {
         return 0.0;
