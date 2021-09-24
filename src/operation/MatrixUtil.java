@@ -9,17 +9,20 @@ public class MatrixUtil {
         return x;
     }
 
-    public static Matrix cramer(Matrix a, double[] b) {
+    public static double[] cramer(Matrix a, double[] b) {
         Matrix x = new Matrix(a);
-        Matrix temp = new Matrix(x.getRow(), x.getCol());
-        double[] detArr = new double[x.getCol()];
+        double[] ansArr = new double[x.getCol()];
+        double detX = x.getDeterminantCofactor();
+        int colB = 0;
         for (int i=0; i < x.getCol(); i++) {
-            for (int q=0; q < x.getCol(); q++) {
-                for (int p=0; p < x.getCol(); p++){
-                }
+            Matrix temp = new Matrix(x);
+            for (int p=0; p < x.getCol(); p++){
+                    temp.setElmt(p,colB,b[p]);
             }
+            ansArr[i] = temp.getDeterminantCofactor()/detX;
+            temp.printMatrix();
+            colB+=1;
         } 
-        //Operasi x
-        return x;
+        return ansArr;
     }
 }

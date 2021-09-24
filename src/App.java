@@ -3,12 +3,17 @@ import base.Matrix;
 
 public class App {
     public static void main(String[] args) {
-        double[][] x = new double[][] {
-            {1,2},
-            {4,5}
-        };
-        Matrix m = new Matrix(x);
-        double det = m.getDeterminantCofactor();
-        System.out.println(det);
+
+        // Contoh Penggunaan Cramer
+        // double[][] x = new double[][] {
+        //     {1,-2},
+        //     {2, 1}
+        // };
+        // Matrix m = new Matrix(x);
+        // double[] b = new double[] {-4,-3};
+        // double[] ans = MatrixUtil.cramer(m,b);
+        // for (int i=0; i<ans.length; i++) {
+        //     System.out.println(ans[i]);
+        // }
     }
 }

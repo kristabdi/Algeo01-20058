@@ -49,6 +49,19 @@ public class Matrix {
     public int getRow() {
         return row;
     }
+    // I/O
+    public void printMatrix() {
+        for (int i =0; i < row; i++) {
+            for (int j=0; j < col; j++) {
+                if (j==row-1) {
+                    System.out.print(elements[i][j]);
+                } else {
+                    System.out.print(elements[i][j] + " ");
+                }
+            }
+            System.out.println();
+        }
+    }
     // Sifat
     public boolean isSquare() {
         return (row==col);
