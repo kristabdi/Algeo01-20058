@@ -3,12 +3,63 @@ package operation;
 import base.Matrix;
 
 public class MatrixUtil {
-    public static Matrix gauss(Matrix m) {
+    // Gauss
+    public static void gauss(Matrix m, double[] b) {
         Matrix x = new Matrix(m);
-        //Operasi x
-        return x; 
+        double[] ansArr = new double[x.getCol()];
+        // yang di OBE yang x
+
+        return; 
     }
 
+    public static void OBE(Matrix m, double[] b, double[] ansArr) {
+        /* Ide : membagi semua elemen kolom pertama agar menjadi sama seperti elemen 0,0;
+            mengubah semua elemen menjadi 0 setelah dikalikan pengali dengan dikurangi elemen baris pertama
+            Lalu, substitusi balik, untuk mendapat solusi
+        */
+        // Eliminasi
+        for (int i=0; i <= n-2; i++) {
+	        for (int j=i+1; j < n; j++) {
+
+                if (m.getElmt(j,i) == 0) {
+                    continue;
+                }
+		        double multiplier = m.getElmt(i,i)/m.getElmt(j,i);
+
+		        for (int k=i; k < n; k++) {
+                    double valRowReducted = m.getElmt(i,k) - multiplier*m.getElmt(j,k);
+			        m.setElmt(j, k, valRowReducted);
+		        }
+                b[j] = b[i] - multiplier*b[j];
+	        }
+        }
+
+        //Substitusi Balik\
+        for (int j=0; j<col; j++) {
+            if (m.getElmt(m.getRow()-1, j)==0) {
+                countZeros+=1;
+            }
+        }
+        if (countZeros==col-1 && (m.getElmt(m.getRow()-1, m.getCol()-1) !=0)) {
+            System.out.println("SPL tidak memiliki solusi.");
+        } else if (countZeros==col) {
+            System.out.println("SPL memiliki tak hingga solusi.");
+            // Parametrik
+        } else if ((m.getElmt(m.getRow()-1, m.getCol()-2) !=0)) {
+            System.out.println("SPL memiliki solusi unik.");
+        }
+
+        ansArr[m.getRow()-1] = b[m.getRow()-1] / m.getElmt(m.getRow()-1, m.getCol()-1);
+        for (int i=b.length-2; i >= 0; i--) {
+            for (int j = i+1; j < n; j++) {
+                sumRow += ansArr[j] * m.getElmt(i,j);
+            }
+            ansArr[i] = (b[i]-sumRow)/m.getElmt(i,i);
+        }
+        // ansArr terisi jawaban solusi sistem
+    }
+
+    // Cramer
     public static double[] cramer(Matrix a, double[] b) {
         Matrix x = new Matrix(a);
         double[] ansArr = new double[x.getCol()];
@@ -25,7 +76,7 @@ public class MatrixUtil {
         } 
         return ansArr;
     }
-
+    // Inverse Adjoin
     public static void getCofactor(Matrix m, Matrix temp, int i, int j) {
         int rowTemp = 0;
         int colTemp = 0;
@@ -84,4 +135,5 @@ public class MatrixUtil {
         }
         return inversedMatrix;
     }
+    //
 }
