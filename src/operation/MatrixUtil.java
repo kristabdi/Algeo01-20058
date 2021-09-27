@@ -1,5 +1,7 @@
 package operation;
 
+import javax.swing.text.DefaultStyledDocument.ElementSpec;
+
 import base.Matrix;
 
 public class MatrixUtil {
@@ -59,7 +61,22 @@ public class MatrixUtil {
         // ansArr terisi jawaban solusi sistem
     }
 
-    // Cramer
+    public static Matrix gaussJ(Matrix m, double[] b){
+        Matrix x = new Matrix(m.getRow(), m.getCol()+1);
+        for(int i = 0; i<x.getRow();i++){
+            for(int j=0; j<x.getCol();j++){
+                if(j==x.getCol()-1){
+                    x.setElmt(i,j,b[j]);
+                }
+                else{
+                    x.setElmt(i,j,m.getElmt(i,j));
+                }
+            }
+        }
+        //gIMANA
+        return x;
+    }
+
     public static double[] cramer(Matrix a, double[] b) {
         Matrix x = new Matrix(a);
         double[] ansArr = new double[x.getCol()];
