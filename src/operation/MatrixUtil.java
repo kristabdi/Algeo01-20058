@@ -5,15 +5,22 @@ import javax.swing.text.DefaultStyledDocument.ElementSpec;
 import base.Matrix;
 
 public class MatrixUtil {
-    // Gauss
-    public static void gauss(Matrix m, double[] b) {
+    // Gauss : return Matrix after forwardElim;
+    public static Matrix gauss(Matrix m, double[] b) {
         Matrix x = new Matrix(m);
+
+        double[] y = new double[b.length];
+        for (int i = 0; i<b.length; i++) {
+            y[i] = b[i];
+        }
         double[] ansArr = new double[x.getCol()];
-        OBE(x, b, ansArr);
-        return; 
+
+        forwardElim(x, y);
+        bSubSol(x, y, ansArr);
+        return x; 
     }
 
-    public static void OBE(Matrix m, double[] b, double[] ansArr) {
+    public static void forwardElim(Matrix m, double[] b) {
         /* Ide : membagi semua elemen kolom pertama agar menjadi sama seperti elemen 0,0;
             mengubah semua elemen menjadi 0 setelah dikalikan pengali dengan dikurangi elemen baris pertama
             Lalu, substitusi balik, untuk mendapat solusi
@@ -36,29 +43,51 @@ public class MatrixUtil {
 	        }
         }
 
-        //Substitusi Balik
+        // Konversi ke leading one
+        for (int i=0; i <= n-1; i++) {
+            if (m.getElmt(i,i) != 0 && m.getElmt(i,i) != 1) {
+                double pembagi = m.getElmt(i,i);
+                for (int j=i; j < n; j++) {
+                    double rowLeadingOne = m.getElmt(i,j)/pembagi;
+                    m.setElmt(i, j, rowLeadingOne);
+                }
+                b[i] /= pembagi;
+            }
+        }
+    }
+
+    public static void bSubSol(Matrix m, double[] b, double[] ansArr) {
+        //Substitusi Balik : mendapat param Matriks telah di forwardElim
+        // Determine possible solution of matrix
+        int countZeros = 0;
+        int n = b.length;
         for (int j=0; j<m.getRow(); j++) {
             if (m.getElmt(m.getRow()-1, j)==0) {
                 countZeros+=1;
             }
         }
-        if (countZeros==col-1 && (m.getElmt(m.getRow()-1, m.getCol()-1) !=0)) {
-            System.out.println("SPL tidak memiliki solusi.");
-        } else if (countZeros==col) {
-            System.out.println("SPL memiliki tak hingga solusi.");
-            // Parametrik
-        } else if ((m.getElmt(m.getRow()-1, m.getCol()-2) !=0)) {
-            System.out.println("SPL memiliki solusi unik.");
-        }
 
-        ansArr[m.getRow()-1] = b[m.getRow()-1] / m.getElmt(m.getRow()-1, m.getCol()-1);
-        for (int i=b.length-2; i >= 0; i--) {
-            for (int j = i+1; j < n; j++) {
-                sumRow += ansArr[j] * m.getElmt(i,j);
+        if (countZeros==m.getCol() && b[m.getCol()-1] !=0) {
+            System.out.println("SPL tidak memiliki solusi.");
+        } else if (countZeros==m.getCol() && b[m.getCol()-1]==0) {
+            System.out.println("SPL memiliki tak hingga solusi.");
+            // Parametrik BELOM DIKERJAIN
+        } else if ((m.getElmt(m.getRow()-1, m.getCol()-1) !=0)) {
+            System.out.println("SPL memiliki solusi unik.");
+
+            ansArr[m.getRow()-1] = b[m.getRow()-1];
+            for (int i=b.length-2; i >= 0; i--) {
+                double sumRow = 0;
+                for (int j = i+1; j < n; j++) {
+                    sumRow += ansArr[j] * m.getElmt(i,j);
+                }
+                ansArr[i] = b[i]-sumRow;
             }
-            ansArr[i] = (b[i]-sumRow)/m.getElmt(i,i);
+            // ansArr terisi jawaban solusi sistem
+            for (int i=0; i < ansArr.length; i++) {
+                System.out.printf("%.2f ", ansArr[i]);
+            }
         }
-        // ansArr terisi jawaban solusi sistem
     }
 
     public static Matrix gaussJ(Matrix m, double[] b){
@@ -134,7 +163,7 @@ public class MatrixUtil {
         }
     };
 
-    public static Matrix inverse(Matrix m) {
+    public static Matrix inverseAdjoin(Matrix m) {
         Matrix x = new Matrix(m);
         Matrix inversedMatrix = new Matrix(x); 
         double det = x.getDeterminantCofactor();
@@ -152,5 +181,4 @@ public class MatrixUtil {
         }
         return inversedMatrix;
     }
-    //
 }
