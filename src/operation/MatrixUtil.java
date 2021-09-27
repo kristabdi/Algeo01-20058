@@ -7,8 +7,7 @@ public class MatrixUtil {
     public static void gauss(Matrix m, double[] b) {
         Matrix x = new Matrix(m);
         double[] ansArr = new double[x.getCol()];
-        // yang di OBE yang x
-
+        OBE(x, b, ansArr);
         return; 
     }
 
@@ -17,6 +16,7 @@ public class MatrixUtil {
             mengubah semua elemen menjadi 0 setelah dikalikan pengali dengan dikurangi elemen baris pertama
             Lalu, substitusi balik, untuk mendapat solusi
         */
+        int n = b.length;
         // Eliminasi
         for (int i=0; i <= n-2; i++) {
 	        for (int j=i+1; j < n; j++) {
@@ -34,8 +34,8 @@ public class MatrixUtil {
 	        }
         }
 
-        //Substitusi Balik\
-        for (int j=0; j<col; j++) {
+        //Substitusi Balik
+        for (int j=0; j<m.getRow(); j++) {
             if (m.getElmt(m.getRow()-1, j)==0) {
                 countZeros+=1;
             }
