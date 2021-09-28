@@ -219,6 +219,45 @@ public class MatrixUtil {
         }
     };
 
+    public static Matrix inverseRowReduction(Matrix m){
+        Matrix x = new Matrix(m.getRow(), m.getCol()-1+m.getRow());
+
+        // Copy matrix m ke depan matrix x kecuali kolom terakhir
+        for(int i=0; i<m.getRow(); i++){
+            for(int j=0; j<m.getCol()-1; j++){
+                x.setElmt(i, j, m.getElmt(i, j));
+            }
+        }
+        for(int i=0; i<m.getRow(); i++){
+            for(int j=m.getCol(); j<x.getCol(); j++){
+                if(i==j-m.getCol()){
+                    x.setElmt(i, j, 1);
+                } else{
+                    x.setElmt(i, j, 0);
+                }
+            }
+        }
+
+        // Kolom terakhir dimasukkan ke variabel b agar bisa diinput ke fungsi gaussJordan
+        double[] b = new double[m.getRow()];
+        for(int i=0; i<m.getRow(); i++){
+            b[i] = m.getElmt(i, m.getCol()-1);
+        }
+
+        // Lakukan gauss Jordan
+        Matrix reducedMatrix = new Matrix(gaussJ(x, b));
+
+        // Pisahkan identitas dengan inversedMatrix
+        Matrix inversedMatrix = new Matrix(m.getRow(), m.getCol());
+        for(int i=0; i<inversedMatrix.getRow(); i++){
+            for(int j=0; j<inversedMatrix.getCol(); j++){
+                inversedMatrix.setElmt(i, j, reducedMatrix.getElmt(i, j+x.getRow()));
+            }
+        }
+
+        return inversedMatrix;
+    }
+
     public static Matrix inverseAdjoin(Matrix m) {
         Matrix x = new Matrix(m);
         Matrix inversedMatrix = new Matrix(x);
