@@ -1,5 +1,7 @@
 package operation;
 
+import java.util.Arrays;
+
 import base.Matrix;
 
 public class MatrixUtil {
@@ -145,18 +147,58 @@ public class MatrixUtil {
     }
 
     public static Matrix gaussJ(Matrix m, double[] b) {
-        Matrix x = new Matrix(m.getRow(), m.getCol() + 1);
-        for (int i = 0; i < x.getRow(); i++) {
-            for (int j = 0; j < x.getCol(); j++) {
-                if (j == x.getCol() - 1) {
-                    x.setElmt(i, j, b[j]);
-                } else {
-                    x.setElmt(i, j, m.getElmt(i, j));
+        //Matrix x = new Matrix(m.getRow(), m.getCol() + 1);
+        //for (int i = 0; i < x.getRow(); i++) {
+        //    for (int j = 0; j < x.getCol(); j++) {
+        //        if (j == x.getCol() - 1) {
+        //            x.setElmt(i, j, b[j]);
+        //        } else {
+        //            x.setElmt(i, j, m.getElmt(i, j));
+        //        }
+        //    }
+        //}
+        int n = b.length;
+        for(int k = 0; k < n-1;k++){
+            //partial pivot
+            if(m.getElmt(k,k)==0){
+                for(int i = k+1;i < n-1;i++){
+                    if(m.getElmt(i, k)>m.getElmt(k, k)){
+                        for(int j = k; j < n-1;j++){
+                            double temp = m.getElmt(k, j);
+                            m.setElmt(k, j, m.getElmt(i, j));
+                            m.setElmt(i, j, temp);
+                        }
+                        double tempb = b[k];
+                        b[k] = b[i];
+                        b[i] = tempb;
+                        break;
+                    }   
                 }
             }
+
+            //ubah ke 1 (dibagi)
+            double leadingone = m.getElmt(k, k);
+            for(int j = k; k < n-1; j++){
+                m.setElmt(k, j, m.getElmt(k,j)/leadingone);
+            }
+            b[k] /= leadingone;
+
+            // dikurangin
+            double divby = 0;
+            for(int i = 0; i<n-1;i++){
+                if(i==k||m.getElmt(i,k)==0){
+                    continue;
+                }
+                divby = m.getElmt(i, k);
+                for(int j = k; j<n-1; j++){
+                    m.setElmt(i, j, (m.getElmt(i,j)-divby*m.getElmt(k, j)));
+                }
+                b[i] -= b[k]*divby;
+            }
         }
-        // gIMANA
-        return x;
+        m.printMatrix();
+        System.out.println(Arrays.toString(b));
+        return m;
     }
 
     public static double[] balikan(Matrix m, double[] b) {

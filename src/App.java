@@ -35,12 +35,12 @@ public class App {
                         // inisialisasi matrix
                         System.out.println("Masukkan elemen matriks a!");
                         a = inputKeyboard(m, n);
-                        double b[] = new double[m];
-                        System.out.println("Masukkan elemen matriks b!");
-                        for(int i = 0; i<m;i++){
-                            double val = sc.nextDouble();
-                            b[i] = val;
-                        }
+                        double b[] = new double[]{5, 3, 1};
+                        //System.out.println("Masukkan elemen matriks b!");
+                        //for(int i = 0; i<m;i++){
+                        //    double val = sc.nextDouble();
+                        //    b[i] = val;
+                        //}
                         if(metSPL == 1){
                             //SPL - Gauss
                             MatrixUtil.gauss(a, b);
@@ -209,20 +209,22 @@ public class App {
                         input = PilihInput();
                     }
                     if(input==1){
-                        System.out.println("Masukkan jumlah baris x : ");
-                        int i = sc.nextInt();
-                        System.out.println("Masukkan jumlah peubah x : ");
-                        int n = sc.nextInt();
-                        System.out.println("Masukkan nilai x : ");
-                        Matrix xn = inputKeyboard(i, n); // nilai x1i, x2i, ...xni
-                        System.out.println("Masukkan nilai y : ");
-                        double y[] = new double[i];
-                        for(int j=0;j<n;j++){ //isi array of yn
-                            y[j] = sc.nextDouble();
-                        }
-                        int k = n-1;
-                        System.out.println("Masukkan nilai Xk : ");
-                        Matrix xk = inputKeyboard(i, k);
+                        //System.out.println("Masukkan jumlah baris x : ");
+                        //int i = sc.nextInt();
+                        //System.out.println("Masukkan jumlah peubah x : ");
+                        //int n = sc.nextInt();
+                        //System.out.println("Masukkan nilai x : ");
+                        //Matrix xn = inputKeyboard(i, n); // nilai x1i, x2i, ...xni
+                        //System.out.println("Masukkan nilai y : ");
+                        //double y[] = new double[i];
+                        //for(int j=0;j<n;j++){ //isi array of yn
+                        //    y[j] = sc.nextDouble();
+                        //}
+                        //int k = n-1;
+                        //System.out.println("Masukkan nilai Xk : ");
+                        //Matrix xk = inputKeyboard(i, k);
+
+
                     }else{
                         System.out.println("Masukkan nama file berisi titik untuk di regresi : ");
                         String nama = sc.nextLine();
