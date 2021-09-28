@@ -194,8 +194,7 @@ public class App {
 
                         Matrix m = new Matrix(m1);
                         //fungsi interpolasi
-                        double[] yans = MatrixUtil.polynomInterpolation(m, TestX);
-                        System.out.println(Arrays.toString(yans));
+                        MatrixUtil.polynomInterpolation(m, TestX);
                     }else{
                         System.out.println("Masukkan nama file berisi titik interpolasi : ");
                         String nama = sc.nextLine();
