@@ -190,7 +190,7 @@ public class App {
                         double[] TestX = new double[]{0.2,0.55,0.85,1.28};
 
                         Matrix m = new Matrix(m1);
-                        //fungsi interpolasi
+                        MatrixUtil.polynomInterpolation(m, TestX);
                     }else{
                         System.out.println("Masukkan nama file berisi titik interpolasi : ");
                         String nama = sc.nextLine();

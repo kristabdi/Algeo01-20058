@@ -298,7 +298,7 @@ public class MatrixUtil {
         return inversedMatrix;
     }
 
-    public static double[] polynomInterpolation (Matrix m, double[] k){
+    public static void polynomInterpolation (Matrix m, double[] k){
         // Array penyimpan y predict
         double[] ypredict = new double[k.length];
 
@@ -321,13 +321,18 @@ public class MatrixUtil {
         Matrix result = new Matrix(gauss(spl, b));
         bSubSol(result, b, konstanta);
 
+        String persamaan = ""+konstanta[0]+"+"+konstanta[1]+"x";
+        for(int i=2; i<konstanta.length; i++){
+            persamaan = persamaan +"+"+ konstanta[i] + "x^" + i;
+        }
+
+        System.out.printf("P(n) = %s\n",persamaan);
         for(int i=0; i<ypredict.length; i++){
             ypredict[i]=0;
             for(int j=0; j<n; j++){
                 ypredict[i] = ypredict[i] + (konstanta[j]*Math.pow(k[i], j));
             }
+            System.out.printf("Y(%.2f) = %.2f\n", k[i], ypredict[i]);
         }
-
-        return ypredict;
     }
 }
