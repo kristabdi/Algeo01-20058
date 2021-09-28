@@ -3,6 +3,7 @@ import base.Matrix;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class App {
@@ -23,7 +24,7 @@ public class App {
                     }
                     int input = PilihInput(); // cara input
                     while(!(isValid(input, 1, 2))){
-                        PilihInput();
+                        input = PilihInput();
                     }
                     if(input==1){
                         //baca input keyboard
@@ -102,7 +103,7 @@ public class App {
                     }
                     int input = PilihInput(); // cara input
                     while(!(isValid(input, 1, 2))){
-                        PilihInput();
+                        input = PilihInput();
                     }
                     if(input == 1){
                         System.out.println("Masukkan jumlah baris dan kolom matriks : ");
@@ -135,7 +136,7 @@ public class App {
                     }
                     int input = PilihInput(); // cara input
                     while(!(isValid(input, 1, 2))){
-                        PilihInput();
+                        input = PilihInput();
                     }
                     if(input==1){
                         System.out.println("Masukkan jumlah baris dan kolom matriks : ");
@@ -162,9 +163,11 @@ public class App {
             else{
                 if(con == 4){
                     //interpolasi
-                    int input = PilihInput(); // cara input
+                    
+                    int input = 0;
+                    input = PilihInput(); // cara input
                     while(!(isValid(input, 1, 2))){
-                        PilihInput();
+                        input = PilihInput();
                     }
                     if(input==1){
                         //System.out.println("Masukkan jumlah titik interpolasi!");
@@ -191,6 +194,8 @@ public class App {
 
                         Matrix m = new Matrix(m1);
                         //fungsi interpolasi
+                        double[] yans = MatrixUtil.polynomInterpolation(m, TestX);
+                        System.out.println(Arrays.toString(yans));
                     }else{
                         System.out.println("Masukkan nama file berisi titik interpolasi : ");
                         String nama = sc.nextLine();
@@ -202,7 +207,7 @@ public class App {
                     //regresi
                     int input = PilihInput(); // cara input
                     while(!(isValid(input, 1, 2))){
-                        PilihInput();
+                        input = PilihInput();
                     }
                     if(input==1){
                         System.out.println("Masukkan jumlah baris x : ");
@@ -307,13 +312,12 @@ public class App {
     }
 
     public static int PilihInput() {
-        Scanner sc = new Scanner(System.in);
+        Scanner scn = new Scanner(System.in);
         System.out.println("Cara input : ");
         System.out.println("1. Dengan Keyboard");
         System.out.println("2. Dari file (augmented matriks)");
         System.out.println("Pilih : ");
-        int x = sc.nextInt();
-        sc.close();
+        int x = scn.nextInt();
         return x;
     }
 
