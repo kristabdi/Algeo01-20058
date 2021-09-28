@@ -241,6 +241,14 @@ public class MatrixUtil {
         // Lakukan gauss Jordan
         Matrix reducedMatrix = new Matrix(gaussJ(x, b));
 
+        // Cek apakah punya matrix atau tidak
+        for(int i=0; i<reducedMatrix.getRow(); i++){
+            if(reducedMatrix.getCountZero(i)==reducedMatrix.getCol()){
+                System.out.println("Tidak ada matriks balikan. Akan dikembalikan matriks awal");
+                return m;
+            }
+        }
+
         // Pisahkan identitas dengan inversedMatrix
         Matrix inversedMatrix = new Matrix(m.getRow(), m.getCol());
         for(int i=0; i<inversedMatrix.getRow(); i++){
