@@ -319,7 +319,14 @@ public class MatrixUtil {
 
         double[] konstanta = new double[spl.getCol()];
         Matrix result = new Matrix(gauss(spl, b));
-        bSubSol(result, b, konstanta);
+        konstanta[result.getRow() - 1] = b[result.getRow() - 1];
+        for (int i = b.length - 2; i >= 0; i--) {
+            double sumRow = 0;
+            for (int j = i + 1; j < b.length; j++) {
+                sumRow += konstanta[j] * result.getElmt(i, j);
+            }
+            konstanta[i] = b[i] - sumRow;
+        }
 
         String persamaan = ""+konstanta[0]+"+"+konstanta[1]+"x";
         for(int i=2; i<konstanta.length; i++){
