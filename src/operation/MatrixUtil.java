@@ -13,10 +13,8 @@ public class MatrixUtil {
         for (int i = 0; i < b.length; i++) {
             y[i] = b[i];
         }
-        double[] ansArr = new double[x.getCol()];
 
         forwardElim(x, y);
-        bSubSol(x, y, ansArr);
         return x;
     }
 
@@ -55,9 +53,31 @@ public class MatrixUtil {
                 b[i] /= pembagi;
             }
         }
+
+        // Swap Row With All Zero
+        int countLowerRowZero = 0;
+        for (int i=0; i < m.getRow(); i++) {
+            if (m.isRowSPLZero(i)) {
+                swapRow(m, i, m.getCol()-1-countLowerRowZero);
+                countLowerRowZero++;
+            }
+        }
     }
 
-    public static void bSubSol(Matrix m, double[] b, double[] ansArr) {
+    public static void swapRow(Matrix m, int row1, int row2) {
+        double[] temp = new double[m.getCol()];
+        int n = m.getCol();
+        for (int j=0; j < n; j++) {
+            temp[j] = m.getElmt(row1,j);
+            m.setElmt(row2,j,m.getElmt(row1,j));           
+        }
+
+        for (int j=0; j < n; j++) {
+            m.setElmt(row1,j,temp[j]);           
+        }
+    }
+
+    public static double[] bSubSol(Matrix m, double[] b, double[] ansArr) {
         // Substitusi Balik : mendapat param Matriks telah di forwardElim
         // Determine possible solution of matrix
         int countZeros = 0;
@@ -144,6 +164,8 @@ public class MatrixUtil {
                 System.out.printf("%.2f ", ansArr[i]);
             }
         }
+
+        return ansArr;
     }
 
     public static Matrix gaussJ(Matrix m, double[] b) {
@@ -355,9 +377,9 @@ public class MatrixUtil {
                 spl.setElmt(i, j, Math.pow(m.getElmt(i, 0), j));
             }
         }
-
         // Array untuk menyimpan nilai y titik
         double[] b = new double[n];
+        System.out.println("Ini y");
         for (int i = 0; i < n; i++) {
             b[i] = m.getElmt(i, 1);
         }
@@ -394,6 +416,55 @@ public class MatrixUtil {
                 ypredict[i] = ypredict[i] + (konstanta[j] * Math.pow(k[i], j));
             }
             System.out.printf("P(%.2f) = %.2f\n", k[i], ypredict[i]);
+        }
+    }
+
+    public static void regression(Matrix m, double[] y) {
+        // Matrix spl dengan baris sebanyak k+1, kolom sebanyak k+2 termasuk y
+        Matrix combin = new Matrix(m.getCol()+1, m.getCol()+1);
+        int n = m.getRow();
+
+        for (int i = 0; i < combin.getRow(); i++) {
+            for (int j = i; j < combin.getCol(); j++) {
+                if (i == 0 && j == 0) {
+                    combin.setElmt(i, j, n);
+                } else if (i == j && j != 0) {
+                    double sigma = 0.0;
+                    for (int k = 0; k < n; k++) {
+                        sigma += Math.pow(m.getElmt(k, j - 1), 2);
+                    }
+                    combin.setElmt(i, j, sigma);
+                } else if (i == 0 && j != 0) {
+                    double sigma = 0.0;
+                    for (int k = 0; k < n; k++) {
+                        sigma += m.getElmt(k, j - 1);
+                    }
+                    combin.setElmt(i, j, sigma);
+                    combin.setElmt(j, i, sigma);
+                } else if(i!=0){
+                    double sigma = 0.0;
+                    for (int k = 0; k < n; k++) {
+                        sigma += m.getElmt(k, j - 1) * m.getElmt(k, i - 1);
+                    }
+                    combin.setElmt(i, j, sigma);
+                    combin.setElmt(j, i, sigma);
+                }
+            }
+        }
+
+        combin.printMatrix();
+        System.out.println("");
+        double[] yspl = new double[combin.getRow()];
+        for(int k=0;k<n; k++){
+            yspl[0] += y[k];
+        }
+        System.out.printf("%.2f ", yspl[0]);
+        
+        for(int i=1; i<yspl.length; i++){
+            for(int k=0; k<n; k++){
+                yspl[i] += m.getElmt(k, i-1)*y[k];
+            }
+            System.out.printf("%.2f ", yspl[i]);
         }
     }
 }
