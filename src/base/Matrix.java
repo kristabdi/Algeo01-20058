@@ -67,6 +67,17 @@ public class Matrix {
         return (row==col);
     }
     // Method
+    public int getCountZero(int row){
+        int zero = 0;
+
+        for(int j=0; j<getCol(); j++){
+            if(getElmt(row, j)==0.0){
+                zero++;
+            }
+        }
+
+        return zero;
+    }
     public double getDeterminantCofactor() {
         if (isSquare()) {
             double det = 0.0;

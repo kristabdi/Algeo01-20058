@@ -221,25 +221,25 @@ public class App {
         }
 
         // Contoh Penggunaan Cramer
-        // double[][] x = new double[][] { 
-        //     {5, -2, 2, 7},
-        //     {1, 0, 0, 3},
-        //     {-3, 1, 5, 0},
-        //     {3, -1, -9, 4}
+        // double[][] x = new double[][] {
+        // {5, -2, 2, 7},
+        // {1, 0, 0, 3},
+        // {-3, 1, 5, 0},
+        // {3, -1, -9, 4}
         // };
         // Matrix m = new Matrix(x);
         // double[] b = new double[] {-4,-3};
         // double[] ans = MatrixUtil.cramer(m,b);
         // for (int i=0; i<ans.length; i++) {
-        //     System.out.println(ans[i]);
+        // System.out.println(ans[i]);
         // }
 
-        //Contoh Penggunaan Inverse
-        // double[][] x = new double[][] { 
-        //     {5, -2, 2, 7},
-        //     {1, 0, 0, 3},
-        //     {-3, 1, 5, 0},
-        //     {3, -1, -9, 4}
+        // Contoh Penggunaan Inverse
+        // double[][] x = new double[][] {
+        // {5, -2, 2, 7},
+        // {1, 0, 0, 3},
+        // {-3, 1, 5, 0},
+        // {3, -1, -9, 4}
         // };
         // Matrix m = new Matrix(x);
         // Matrix a = MatrixUtil.inverseAdjoin(m);
@@ -259,7 +259,7 @@ public class App {
         //a.printMatrix();
     }
 
-    public static void TulisMenuAwal(){
+    public static void TulisMenuAwal() {
         System.out.println("Menu tersedia : ");
         System.out.println("1. Sistem Persamaan Linear");
         System.out.println("2. Determinan");
@@ -270,30 +270,30 @@ public class App {
         System.out.println("Pilih menu : ");
     }
 
-    public static void TulisSubMenuSPL(){
+    public static void TulisSubMenuSPL() {
         System.out.println("Pilih sub-menu (metode) : ");
         System.out.println("1. Metode eliminasi Gauss");
         System.out.println("2. Metode eliminasi Gauss-Jordan");
         System.out.println("3. Metode matriks balikan");
         System.out.println("4. Kaidah Cramer");
-        System.out.println("Pilih sub-menu : ");   
+        System.out.println("Pilih sub-menu : ");
     }
 
-    public static void TulisSubMenuDet(){
+    public static void TulisSubMenuDet() {
         System.out.println("Pilih sub-menu (metode) : ");
         System.out.println("1. Metode reduksi baris");
         System.out.println("2. Metode ekspansi kofaktor");
-        System.out.println("Pilih sub-menu : ");   
+        System.out.println("Pilih sub-menu : ");
     }
 
-    public static void TulisSubMenuBalikan(){
+    public static void TulisSubMenuBalikan() {
         System.out.println("Pilih sub-menu (metode) : ");
         System.out.println("1. Metode reduksi baris");
         System.out.println("2. Metode adjoin");
-        System.out.println("Pilih sub-menu : ");   
+        System.out.println("Pilih sub-menu : ");
     }
 
-    public static int PilihInput(){
+    public static int PilihInput() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Cara input : ");
         System.out.println("1. Dengan Keyboard");
@@ -303,15 +303,16 @@ public class App {
         sc.close();
         return x;
     }
-    public static boolean isValid(int val, int awal, int akhir){
+
+    public static boolean isValid(int val, int awal, int akhir) {
         boolean valid = false;
-        if(val >= awal && val <= akhir){
+        if (val >= awal && val <= akhir) {
             valid = true;
         }
         return valid;
     }
 
-    public static Matrix inputKeyboard(int m, int n){
+    public static Matrix inputKeyboard(int m, int n) {
         Matrix m1 = new Matrix(m, n);
         Scanner sc = new Scanner(System.in);
         for(int i = 0; i < m; i++){
@@ -324,32 +325,32 @@ public class App {
         return m1;
     }
 
-    public static Matrix inputFile(String nama){
+    public static Matrix inputFile(String nama) {
         // Buat matriks dari matriks augmented file
-        Matrix mNot = new Matrix(1,1);
-        try{
+        Matrix mNot = new Matrix(1, 1);
+        try {
             File myFile = new File(nama);
             Scanner sc = new Scanner(myFile);
             int m = 0; // row
             int n = 0; // cols
-            
-            while(sc.hasNextLine()){
+
+            while (sc.hasNextLine()) {
                 String data = sc.nextLine();
                 String arrStr[] = data.split(" ");
                 n = 0;
-                for(String i : arrStr){
-                    n++; 
+                for (String i : arrStr) {
+                    n++;
                 }
                 m++;
             }
             File myFile2 = new File(nama);
             Scanner sc2 = new Scanner(myFile2);
             Matrix m1 = new Matrix(m, n);
-            int i=0;
-            while(sc2.hasNextLine()){
+            int i = 0;
+            while (sc2.hasNextLine()) {
                 String data1 = sc2.nextLine();
                 String arrStr1[] = data1.split(" ");
-                for(int j=0;j<n;j++){
+                for (int j = 0; j < n; j++) {
                     Double val = Double.parseDouble(arrStr1[j]);
                     m1.setElmt(i, j, val);
                 }
@@ -358,7 +359,7 @@ public class App {
             sc.close();
             sc2.close();
             return m1;
-        }catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             System.out.println("File not found");
             e.printStackTrace();
             return mNot;
