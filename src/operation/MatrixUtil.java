@@ -11,10 +11,8 @@ public class MatrixUtil {
         for (int i = 0; i < b.length; i++) {
             y[i] = b[i];
         }
-        double[] ansArr = new double[x.getCol()];
 
         forwardElim(x, y);
-        bSubSol(x, y, ansArr);
         return x;
     }
 
@@ -53,9 +51,30 @@ public class MatrixUtil {
                 b[i] /= pembagi;
             }
         }
+
+        // Swap Row With All Zero
+        int countLowerRowZero = 0;
+        for (int i=0; i < m.getRow(); i++) {
+            if (m.isRowSPLZero(i)) {
+                swapRow(m, i, m.getCol()-1-countLowerRowZero);
+                countLowerRowZero++;
+            }
+        }
     }
 
-    public static void bSubSol(Matrix m, double[] b, double[] ansArr) {
+    public static void swapRow(Matrix m, int row1, int row2) {
+        double[] temp = new double[m.getCol()];
+        for (int j=0; j < n; j++) {
+            temp[j] = m.getElmt(row1,j);
+            m.setElmt(row2,j,m.getElmt(row1,j));           
+        }
+
+        for (int j=0; j < n; j++) {
+            m.setElmt(row1,j,temp[j);           
+        }
+    }
+
+    public static double[] bSubSol(Matrix m, double[] b, double[] ansArr) {
         // Substitusi Balik : mendapat param Matriks telah di forwardElim
         // Determine possible solution of matrix
         int countZeros = 0;
@@ -142,6 +161,8 @@ public class MatrixUtil {
                 System.out.printf("%.2f ", ansArr[i]);
             }
         }
+
+        return ansArr;
     }
 
     public static Matrix gaussJ(Matrix m, double[] b) {

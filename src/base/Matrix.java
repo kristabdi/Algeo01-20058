@@ -66,12 +66,21 @@ public class Matrix {
     public boolean isSquare() {
         return (row==col);
     }
+
+    public boolean isRowSPLZero(int rw) {
+        for(int j=0; j<getCol(); j++){
+            if(getElmt(rw, j)!=0.0){
+                return false;
+            }
+        }
+        return true;
+    }
     // Method
-    public int getCountZero(int row){
+    public int getCountZero(int rw){
         int zero = 0;
 
         for(int j=0; j<getCol(); j++){
-            if(getElmt(row, j)==0.0){
+            if(getElmt(rw, j)==0.0){
                 zero++;
             }
         }
