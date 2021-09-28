@@ -198,27 +198,6 @@ public class MatrixUtil {
         }
     };
 
-    public static void adj(double[][] toAdjoin, Matrix m) {
-        if (m.getRow() == 1 && m.getCol() == 1) {
-            toAdjoin[0][0] = 1;
-            return;
-        }
-
-        Matrix temp = new Matrix(m.getRow() - 1, m.getCol() - 1);
-        int plusmin = 1;
-        for (int i = 0; i < m.getRow(); i++) {
-            for (int j = 0; j < m.getCol(); j++) {
-                getCofactor(m, temp, i, j);
-                if ((i + j) % 2 == 0) {
-                    plusmin = 1;
-                } else {
-                    plusmin = -1;
-                }
-                toAdjoin[j][i] = plusmin * temp.getDeterminantCofactor();
-            }
-        }
-    };
-
     public static Matrix inverseRowReduction(Matrix m){
         Matrix x = new Matrix(m.getRow(), m.getCol()-1+m.getRow());
 
@@ -258,6 +237,27 @@ public class MatrixUtil {
         return inversedMatrix;
     }
 
+    public static void adj(double[][] toAdjoin, Matrix m) {
+        if (m.getRow() == 1 && m.getCol() == 1) {
+            toAdjoin[0][0] = 1;
+            return;
+        }
+
+        Matrix temp = new Matrix(m.getRow() - 1, m.getCol() - 1);
+        int plusmin = 1;
+        for (int i = 0; i < m.getRow(); i++) {
+            for (int j = 0; j < m.getCol(); j++) {
+                getCofactor(m, temp, i, j);
+                if ((i + j) % 2 == 0) {
+                    plusmin = 1;
+                } else {
+                    plusmin = -1;
+                }
+                toAdjoin[j][i] = plusmin * temp.getDeterminantCofactor();
+            }
+        }
+    };
+    
     public static Matrix inverseAdjoin(Matrix m) {
         Matrix x = new Matrix(m);
         Matrix inversedMatrix = new Matrix(x);
