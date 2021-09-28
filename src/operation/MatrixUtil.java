@@ -1,5 +1,4 @@
 package operation;
-import java.lang.FdLibm.Pow;
 
 import base.Matrix;
 
