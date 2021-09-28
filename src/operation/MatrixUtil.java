@@ -73,17 +73,17 @@ public class MatrixUtil {
             // Buat dependensi matrix
             // Matrix depend = new Matrix(m.getCol(), m.getCol());
             // for (int i = 0; i < m.getRow(); i++) {
-            //     boolean found = false;
-            //     int elmtKe = -1;
-            //     for (int j = 0; j < m.getCol(); j++) {
-            //         if (found == true) {
-            //             depend.setElmt(elmtKe, j, m.getElmt(i, j));
-            //         }
-            //         if (m.getElmt(i, j) != 0.0 && found == false) {
-            //             found = true;
-            //             elmtKe = j;
-            //         }
-            //     }
+            // boolean found = false;
+            // int elmtKe = -1;
+            // for (int j = 0; j < m.getCol(); j++) {
+            // if (found == true) {
+            // depend.setElmt(elmtKe, j, m.getElmt(i, j));
+            // }
+            // if (m.getElmt(i, j) != 0.0 && found == false) {
+            // found = true;
+            // elmtKe = j;
+            // }
+            // }
             // }
 
             String[] abjad = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
@@ -91,36 +91,36 @@ public class MatrixUtil {
             int abjadUsed = 0;
             Double[] ansNum = new Double[m.getCol()];
             String[] ansStr = new String[m.getCol()];
-            for(int i=0; i<m.getCol(); i++){
-                ansNum[i]=0.0;
-                ansStr[i]="";
+            for (int i = 0; i < m.getCol(); i++) {
+                ansNum[i] = 0.0;
+                ansStr[i] = "";
             }
 
-            for(int i=m.getRow()-1; i>=0; i--){
-                if(m.getCountZero(i)==m.getCol()){
+            for (int i = m.getRow() - 1; i >= 0; i--) {
+                if (m.getCountZero(i) == m.getCol()) {
                     ansStr[i] = abjad[abjadUsed];
                     abjadUsed++;
-                } else if(m.getCountZero(i)==m.getCol()-1){
+                } else if (m.getCountZero(i) == m.getCol() - 1) {
                     ansNum[i] = b[i];
-                } else{
+                } else {
                     ansNum[i] = b[i];
-                    for(int j=i+1; j<m.getCol(); j++){
-                        ansNum[i] = ansNum[i] + (m.getElmt(i, j)*ansNum[j]);
-                        if(ansStr[i]==""){
+                    for (int j = i + 1; j < m.getCol(); j++) {
+                        ansNum[i] = ansNum[i] + (m.getElmt(i, j) * ansNum[j]);
+                        if (ansStr[i] == "") {
                             ansStr[i] = ansStr[i] + (m.getElmt(i, j) + ansStr[j]);
-                        } else{
+                        } else {
                             ansStr[i] = ansStr[i] + "+" + (m.getElmt(i, j) + ansStr[j]);
-                        } 
+                        }
                     }
                 }
             }
 
-            for(int i=0; i<m.getCol(); i++){
-                if(ansStr[i]==""){
+            for (int i = 0; i < m.getCol(); i++) {
+                if (ansStr[i] == "") {
                     System.out.printf("%.2f ", ansNum[i]);
-                } else if(ansStr[i]!="" && ansNum[i]==0){
+                } else if (ansStr[i] != "" && ansNum[i] == 0) {
                     System.out.printf("%s ", ansStr[i]);
-                } else{
+                } else {
                     System.out.printf("%.2f%s ", ansNum[i], ansStr[i]);
                 }
             }
@@ -158,22 +158,24 @@ public class MatrixUtil {
         // gIMANA
         return x;
     }
-    public static double[] balikan(Matrix m, double[] b){
+
+    public static double[] balikan(Matrix m, double[] b) {
         double[] ansArr = new double[m.getRow()];
 
         // Lakukan inverse matriks
         Matrix inversed = inverseAdjoin(m);
 
         // x = inversed*b
-        for(int i=0; i<m.getRow(); i++){
+        for (int i = 0; i < m.getRow(); i++) {
             ansArr[i] = 0;
-            for(int j=0; j<m.getCol(); j++){
-                ansArr[i] = ansArr[i] + (inversed.getElmt(i, j)*b[i]);
+            for (int j = 0; j < m.getCol(); j++) {
+                ansArr[i] = ansArr[i] + (inversed.getElmt(i, j) * b[i]);
             }
         }
-        
+
         return ansArr;
     }
+
     public static double[] cramer(Matrix a, double[] b) {
         Matrix x = new Matrix(a);
         double[] ansArr = new double[x.getCol()];
@@ -211,37 +213,38 @@ public class MatrixUtil {
         }
     };
 
-    public static Matrix inverseRowReduction(Matrix m){
-        Matrix x = new Matrix(m.getRow(), m.getCol()-1+m.getRow());
+    public static Matrix inverseRowReduction(Matrix m) {
+        Matrix x = new Matrix(m.getRow(), m.getCol() - 1 + m.getRow());
 
         // Copy matrix m ke depan matrix x kecuali kolom terakhir
-        for(int i=0; i<m.getRow(); i++){
-            for(int j=0; j<m.getCol()-1; j++){
+        for (int i = 0; i < m.getRow(); i++) {
+            for (int j = 0; j < m.getCol() - 1; j++) {
                 x.setElmt(i, j, m.getElmt(i, j));
             }
         }
-        for(int i=0; i<m.getRow(); i++){
-            for(int j=m.getCol(); j<x.getCol(); j++){
-                if(i==j-m.getCol()){
+        for (int i = 0; i < m.getRow(); i++) {
+            for (int j = m.getCol(); j < x.getCol(); j++) {
+                if (i == j - m.getCol()) {
                     x.setElmt(i, j, 1);
-                } else{
+                } else {
                     x.setElmt(i, j, 0);
                 }
             }
         }
 
-        // Kolom terakhir dimasukkan ke variabel b agar bisa diinput ke fungsi gaussJordan
+        // Kolom terakhir dimasukkan ke variabel b agar bisa diinput ke fungsi
+        // gaussJordan
         double[] b = new double[m.getRow()];
-        for(int i=0; i<m.getRow(); i++){
-            b[i] = m.getElmt(i, m.getCol()-1);
+        for (int i = 0; i < m.getRow(); i++) {
+            b[i] = m.getElmt(i, m.getCol() - 1);
         }
 
         // Lakukan gauss Jordan
         Matrix reducedMatrix = new Matrix(gaussJ(x, b));
 
         // Cek apakah punya matrix atau tidak
-        for(int i=0; i<reducedMatrix.getRow(); i++){
-            if(reducedMatrix.getCountZero(i)==reducedMatrix.getCol()){
+        for (int i = 0; i < reducedMatrix.getRow(); i++) {
+            if (reducedMatrix.getCountZero(i) == reducedMatrix.getCol()) {
                 System.out.println("Tidak ada matriks balikan. Akan dikembalikan matriks awal");
                 return m;
             }
@@ -249,9 +252,9 @@ public class MatrixUtil {
 
         // Pisahkan identitas dengan inversedMatrix
         Matrix inversedMatrix = new Matrix(m.getRow(), m.getCol());
-        for(int i=0; i<inversedMatrix.getRow(); i++){
-            for(int j=0; j<inversedMatrix.getCol(); j++){
-                inversedMatrix.setElmt(i, j, reducedMatrix.getElmt(i, j+x.getRow()));
+        for (int i = 0; i < inversedMatrix.getRow(); i++) {
+            for (int j = 0; j < inversedMatrix.getCol(); j++) {
+                inversedMatrix.setElmt(i, j, reducedMatrix.getElmt(i, j + x.getRow()));
             }
         }
 
@@ -298,22 +301,22 @@ public class MatrixUtil {
         return inversedMatrix;
     }
 
-    public static void polynomInterpolation (Matrix m, double[] k){
+    public static void polynomInterpolation(Matrix m, double[] k) {
         // Array penyimpan y predict
         double[] ypredict = new double[k.length];
 
         // Buat matrix spl yang berisi matrix persamaan interpolasi polinom
         int n = m.getRow();
-        Matrix spl = new Matrix(n, n+1);
-        for(int i=0; i<spl.getRow(); i++){
-            for(int j=0; j<spl.getCol(); j++){
+        Matrix spl = new Matrix(n, n + 1);
+        for (int i = 0; i < spl.getRow(); i++) {
+            for (int j = 0; j < spl.getCol(); j++) {
                 spl.setElmt(i, j, Math.pow(m.getElmt(i, 0), j));
             }
         }
 
         // Array untuk menyimpan nilai y titik
         double[] b = new double[n];
-        for(int i=0; i<n; i++){
+        for (int i = 0; i < n; i++) {
             b[i] = m.getElmt(i, 1);
         }
 
@@ -328,18 +331,27 @@ public class MatrixUtil {
             konstanta[i] = b[i] - sumRow;
         }
 
-        String persamaan = ""+konstanta[0]+"+"+konstanta[1]+"x";
-        for(int i=2; i<konstanta.length; i++){
-            persamaan = persamaan +"+"+ konstanta[i] + "x^" + i;
+        String persamaan = "" + konstanta[0];
+        if (konstanta[1] > 0) {
+            persamaan += "+" + konstanta[1] + "x";
+        } else {
+            persamaan += konstanta[1] + "x";
+        }
+        for (int i = 2; i < konstanta.length; i++) {
+            if (konstanta[i] > 0) {
+                persamaan = persamaan + "+" + konstanta[i] + "x^" + i;
+            } else {
+                persamaan = persamaan + konstanta[i] + "x^" + i;
+            }
         }
 
-        System.out.printf("P(n) = %s\n",persamaan);
-        for(int i=0; i<ypredict.length; i++){
-            ypredict[i]=0;
-            for(int j=0; j<n; j++){
-                ypredict[i] = ypredict[i] + (konstanta[j]*Math.pow(k[i], j));
+        System.out.printf("P(n) = %s\n", persamaan);
+        for (int i = 0; i < ypredict.length; i++) {
+            ypredict[i] = 0;
+            for (int j = 0; j < n; j++) {
+                ypredict[i] = ypredict[i] + (konstanta[j] * Math.pow(k[i], j));
             }
-            System.out.printf("Y(%.2f) = %.2f\n", k[i], ypredict[i]);
+            System.out.printf("P(%.2f) = %.2f\n", k[i], ypredict[i]);
         }
     }
 }
