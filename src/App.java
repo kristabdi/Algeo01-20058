@@ -167,16 +167,29 @@ public class App {
                         PilihInput();
                     }
                     if(input==1){
-                        System.out.println("Masukkan jumlah titik interpolasi!");
-                        int n = sc.nextInt();
-                        System.out.println("Masukkan titik-titik interpolasi!");
-                        a = inputKeyboard(n, 2); 
-                        System.out.println("Masukkan jumlah x yang akan ditaksir nilai fungsinya.");
-                        int nX = sc.nextInt();
-                        double TestX[] = new double[nX];
-                        for(int i =0;i<nX;i++){
-                            TestX[i] = sc.nextDouble();
-                        }
+                        //System.out.println("Masukkan jumlah titik interpolasi!");
+                        //int n = sc.nextInt();
+                        //System.out.println("Masukkan titik-titik interpolasi!");
+                        //a = inputKeyboard(n, 2); 
+                        //System.out.println("Masukkan jumlah x yang akan ditaksir nilai fungsinya.");
+                        //int nX = sc.nextInt();
+                        //double TestX[] = new double[nX];
+                        //for(int i =0;i<nX;i++){
+                        //    TestX[i] = sc.nextDouble();
+                        //}
+
+                        double[][] m1 = new double[][]{
+                            {0.1, 0.003},
+                            {0.3, 0.067},
+                            {0.5, 0.148},
+                            {0.7, 0.248},
+                            {0.9, 0.370},
+                            {1.1, 0.518},
+                            {1.3, 0.697}
+                        };
+                        double[] TestX = new double[]{0.2,0.55,0.85,1.28};
+
+                        Matrix m = new Matrix(m1);
                         //fungsi interpolasi
                     }else{
                         System.out.println("Masukkan nama file berisi titik interpolasi : ");
