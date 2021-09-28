@@ -159,7 +159,7 @@ public class MatrixUtil {
         // gIMANA
         return x;
     }
-    public static double[] splInverse(Matrix m, double[] b){
+    public static double[] balikan(Matrix m, double[] b){
         double[] ansArr = new double[m.getRow()];
 
         // Lakukan inverse matriks
