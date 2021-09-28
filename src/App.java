@@ -209,20 +209,46 @@ public class App {
                         input = PilihInput();
                     }
                     if(input==1){
-                        System.out.println("Masukkan jumlah baris x : ");
-                        int i = sc.nextInt();
-                        System.out.println("Masukkan jumlah peubah x : ");
-                        int n = sc.nextInt();
-                        System.out.println("Masukkan nilai x : ");
-                        Matrix xn = inputKeyboard(i, n); // nilai x1i, x2i, ...xni
-                        System.out.println("Masukkan nilai y : ");
-                        double y[] = new double[i];
-                        for(int j=0;j<n;j++){ //isi array of yn
-                            y[j] = sc.nextDouble();
-                        }
-                        int k = n-1;
-                        System.out.println("Masukkan nilai Xk : ");
-                        Matrix xk = inputKeyboard(i, k);
+                        // System.out.println("Masukkan jumlah baris x : ");
+                        // int i = sc.nextInt();
+                        // System.out.println("Masukkan jumlah peubah x : ");
+                        // int n = sc.nextInt();
+                        // System.out.println("Masukkan nilai x : ");
+                        // Matrix xn = inputKeyboard(i, n); // nilai x1i, x2i, ...xni
+                        // System.out.println("Masukkan nilai y : ");
+                        // double y[] = new double[i];
+                        // for(int j=0;j<n;j++){ //isi array of yn
+                        //     y[j] = sc.nextDouble();
+                        // }
+                        // int k = n-1;
+                        // System.out.println("Masukkan nilai Xk : ");
+                        // Matrix xk = inputKeyboard(i, k);
+
+                        double[][] m1 = new double[][] {
+                            {72.4, 76.3, 29.18},
+                            {41.6, 70.3, 29.35},
+                            {34.3, 77.1, 29.24},
+                            {35.1, 68.0, 29.27},
+                            {10.7, 79.0, 29.78},
+                            {12.9, 67.4, 29.39},
+                            {8.3, 66.8, 29.69},
+                            {20.1, 76.9, 29.48},
+                            {72.2, 77.7, 29.09},
+                            {24.0, 67.7, 29.60},
+                            {23.2, 76.8, 29.38},
+                            {47.4, 86.6, 29.35},
+                            {31.5, 76.9, 29.63},
+                            {10.6, 86.3, 29.56},
+                            {11.2, 86.0, 29.48},
+                            {73.3, 76.3, 29.40},
+                            {75.4, 77.9, 29.28},
+                            {96.6, 78.7, 29.29},
+                            {107.4, 86.8, 29.03},
+                            {54.9, 70.9, 29.37}
+                        };
+                        Matrix m = new Matrix(m1);
+                        double[] y = new double[] { 0.90, 0.91, 0.96, 0.89, 1.00, 1.10, 1.15, 1.03, 0.77, 1.07, 1.07, 0.94, 1.10, 1.10, 1.10, 0.91, 0.87, 0.78, 0.82, 0.95 };
+                        MatrixUtil.regression(m, y);
                     }else{
                         System.out.println("Masukkan nama file berisi titik untuk di regresi : ");
                         String nama = sc.nextLine();
