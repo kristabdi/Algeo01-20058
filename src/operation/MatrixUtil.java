@@ -160,7 +160,22 @@ public class MatrixUtil {
         // gIMANA
         return x;
     }
+    public static double[] splInverse(Matrix m, double[] b){
+        double[] ansArr = new double[m.getRow()];
 
+        // Lakukan inverse matriks
+        Matrix inversed = inverseAdjoin(m);
+
+        // x = inversed*b
+        for(int i=0; i<m.getRow(); i++){
+            ansArr[i] = 0;
+            for(int j=0; j<m.getCol(); j++){
+                ansArr[i] = ansArr[i] + (inversed.getElmt(i, j)*b[i]);
+            }
+        }
+        
+        return ansArr;
+    }
     public static double[] cramer(Matrix a, double[] b) {
         Matrix x = new Matrix(a);
         double[] ansArr = new double[x.getCol()];
@@ -257,7 +272,7 @@ public class MatrixUtil {
             }
         }
     };
-    
+
     public static Matrix inverseAdjoin(Matrix m) {
         Matrix x = new Matrix(m);
         Matrix inversedMatrix = new Matrix(x);
