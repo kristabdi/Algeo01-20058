@@ -1,4 +1,6 @@
 package operation;
+import java.lang.FdLibm.Pow;
+
 import base.Matrix;
 
 public class MatrixUtil {
@@ -295,5 +297,38 @@ public class MatrixUtil {
             }
         }
         return inversedMatrix;
+    }
+
+    public static double[] polynomInterpolation (Matrix m, double[] k){
+        // Array penyimpan y predict
+        double[] ypredict = new double[k.length];
+
+        // Buat matrix spl yang berisi matrix persamaan interpolasi polinom
+        int n = m.getRow();
+        Matrix spl = new Matrix(n, n+1);
+        for(int i=0; i<spl.getRow(); i++){
+            for(int j=0; j<spl.getCol(); j++){
+                spl.setElmt(i, j, Math.pow(m.getElmt(i, 0), j));
+            }
+        }
+
+        // Array untuk menyimpan nilai y titik
+        double[] b = new double[n];
+        for(int i=0; i<n; i++){
+            b[i] = m.getElmt(i, 1);
+        }
+
+        double[] konstanta = new double[spl.getCol()];
+        Matrix result = new Matrix(gauss(spl, b));
+        bSubSol(result, b, konstanta);
+
+        for(int i=0; i<ypredict.length; i++){
+            ypredict[i]=0;
+            for(int j=0; j<n; j++){
+                ypredict[i] = ypredict[i] + (konstanta[j]*Math.pow(k[i], j));
+            }
+        }
+
+        return ypredict;
     }
 }
