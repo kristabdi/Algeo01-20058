@@ -64,13 +64,14 @@ public class MatrixUtil {
 
     public static void swapRow(Matrix m, int row1, int row2) {
         double[] temp = new double[m.getCol()];
+        int n = m.getCol();
         for (int j=0; j < n; j++) {
             temp[j] = m.getElmt(row1,j);
             m.setElmt(row2,j,m.getElmt(row1,j));           
         }
 
         for (int j=0; j < n; j++) {
-            m.setElmt(row1,j,temp[j);           
+            m.setElmt(row1,j,temp[j]);           
         }
     }
 
