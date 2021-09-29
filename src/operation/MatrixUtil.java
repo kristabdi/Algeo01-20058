@@ -1,7 +1,7 @@
 package operation;
 
 import java.util.Arrays;
-
+import static java.lang.Math.abs;
 import base.Matrix;
 
 public class MatrixUtil {
@@ -33,8 +33,40 @@ public class MatrixUtil {
          */
         // Eliminasi
         m = augmented(m, b);
-        
+        int h = 0; /* Initialization of the pivot row */
+        int k = 0; /* Initialization of the pivot column */
+        int r = m.getRow();
+        int n = m.getCol();
+        while (h < r && k < n) {
+            /* Find the k-th pivot: */
+            int idx_max = 0;
+            double max = m.getElmt(h, k);
+            for (int i=h; i<r; i++) {
+                double val = m.getElmt(i,k);
+                if (max < Math.abs(val)) {
+                    max = m.getElmt(i,k);
+                    idx_max = i;
+                }
+            }
 
+            if (m.getElmt(idx_max, k)==0) {
+                k++;
+                continue;
+            } else {
+                swapRow(m, h, idx_max);
+                for (int i = h + 1; i < r; i++) {
+                    double multiplier = m.getElmt(i,k) / m.getElmt(h,k);
+                    m.setElmt(i, k, 0);
+                    for (int j = k + 1; j < n; j++) {
+                        double val = m.getElmt(i,j) - m.getElmt(h ,j) * multiplier;
+                        m.setElmt(i, j, val);
+                    }
+                }
+                h++;
+                k++;
+            }
+        }
+            
         // for (int i = 0; i <= m.getRow() - 2; i++) {
         //     for (int j = i + 1; j < m.getRow(); j++) {
 
@@ -51,17 +83,16 @@ public class MatrixUtil {
         //     }
         // }
 
-        // // Konversi ke leading one
-        // for (int i = 0; i <= m.getCol() - 1; i++) {
-        //     if (m.getElmt(i, i) != 0 && m.getElmt(i, i) != 1) {
-        //         double pembagi = m.getElmt(i, i);
-        //         for (int j = i; j < m.getRow(); j++) {
-        //             double rowLeadingOne = m.getElmt(i, j) / pembagi;
-        //             m.setElmt(i, j, rowLeadingOne);
-        //         }
-        //         b[i] /= pembagi;
-        //     }
-        // }
+        // Konversi ke leading one
+        for (int i = 0; i <= m.getRow() - 1; i++) {
+            if (m.getElmt(i, i) != 0 && m.getElmt(i, i) != 1) {
+                double pembagi = m.getElmt(i, i);
+                for (int j = i; j < m.getCol(); j++) {
+                    double rowLeadingOne = m.getElmt(i, j) / pembagi;
+                    m.setElmt(i, j, rowLeadingOne);
+                }
+            }
+        }
 
         // // Swap Row With All Zero
         // int countLowerRowZero = 0;
@@ -173,7 +204,7 @@ public class MatrixUtil {
     }
 
     public static Matrix augmented(Matrix m, double[] b) {
-        Matrix mNew = new Matrix(m.getRow()+1, m.getCol()+1);
+        Matrix mNew = new Matrix(m.getRow(), m.getCol()+1);
         for (int i = 0; i < mNew.getRow(); i++) {
             for (int j = 0; j < mNew.getCol(); j++) {
                 if (j == mNew.getCol()-1) {
