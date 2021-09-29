@@ -8,13 +8,7 @@ public class MatrixUtil {
     // Gauss : return Matrix after forwardElim;
     public static Matrix gauss(Matrix m, double[] b) {
         Matrix x = new Matrix(m);
-
-        double[] y = new double[b.length];
-        for (int i = 0; i < b.length; i++) {
-            y[i] = b[i];
-        }
-
-        forwardElim(x, y);
+        forwardElim(x, b);
         return x;
     }
 
@@ -77,7 +71,7 @@ public class MatrixUtil {
         }
     }
 
-    public static double[] bSubSol(Matrix m, double[] b, double[] ansArr) {
+    public static void bSubSol(Matrix m, double[] b, double[] ansArr) {
         // Substitusi Balik : mendapat param Matriks telah di forwardElim
         // Determine possible solution of matrix
         int countZeros = 0;
@@ -164,8 +158,6 @@ public class MatrixUtil {
                 System.out.printf("%.2f ", ansArr[i]);
             }
         }
-
-        return ansArr;
     }
 
     public static Matrix gaussJ(Matrix m, double[] b) {
@@ -371,21 +363,22 @@ public class MatrixUtil {
 
         // Buat matrix spl yang berisi matrix persamaan interpolasi polinom
         int n = m.getRow();
-        Matrix spl = new Matrix(n, n + 1);
+        Matrix spl = new Matrix(n, n);
         for (int i = 0; i < spl.getRow(); i++) {
             for (int j = 0; j < spl.getCol(); j++) {
                 spl.setElmt(i, j, Math.pow(m.getElmt(i, 0), j));
             }
         }
+
         // Array untuk menyimpan nilai y titik
         double[] b = new double[n];
-        System.out.println("Ini y");
         for (int i = 0; i < n; i++) {
             b[i] = m.getElmt(i, 1);
         }
 
         double[] konstanta = new double[spl.getCol()];
         Matrix result = new Matrix(gauss(spl, b));
+
         konstanta[result.getRow() - 1] = b[result.getRow() - 1];
         for (int i = b.length - 2; i >= 0; i--) {
             double sumRow = 0;
@@ -395,31 +388,32 @@ public class MatrixUtil {
             konstanta[i] = b[i] - sumRow;
         }
 
-        String persamaan = "" + konstanta[0];
+        String persamaan = "" + String.format("%.4f", konstanta[0]);
         if (konstanta[1] > 0) {
-            persamaan += "+" + konstanta[1] + "x";
+            persamaan += "+" + String.format("%.4f", konstanta[1]) + "x";
         } else {
-            persamaan += konstanta[1] + "x";
+            persamaan += String.format("%.4f", konstanta[1]) + "x";
         }
         for (int i = 2; i < konstanta.length; i++) {
+            String temp = String.format("%.4f", konstanta[i]);
             if (konstanta[i] > 0) {
-                persamaan = persamaan + "+" + konstanta[i] + "x^" + i;
+                persamaan = persamaan + "+" + temp + "x^" + i;
             } else {
-                persamaan = persamaan + konstanta[i] + "x^" + i;
+                persamaan = persamaan + temp + "x^" + i;
             }
         }
 
-        System.out.printf("P(n) = %s\n", persamaan);
+        System.out.printf("P(%d) = %s\n", n, persamaan);
         for (int i = 0; i < ypredict.length; i++) {
             ypredict[i] = 0;
             for (int j = 0; j < n; j++) {
                 ypredict[i] = ypredict[i] + (konstanta[j] * Math.pow(k[i], j));
             }
-            System.out.printf("P(%.2f) = %.2f\n", k[i], ypredict[i]);
+            System.out.printf("P(%.2f) = %.4f\n", k[i], ypredict[i]);
         }
     }
 
-    public static void regression(Matrix m, double[] y) {
+    public static void regression(Matrix m, double[] y, double[] x) {
         // Matrix spl dengan baris sebanyak k+1, kolom sebanyak k+2 termasuk y
         Matrix combin = new Matrix(m.getCol()+1, m.getCol()+1);
         int n = m.getRow();
@@ -452,19 +446,37 @@ public class MatrixUtil {
             }
         }
 
-        combin.printMatrix();
-        System.out.println("");
         double[] yspl = new double[combin.getRow()];
         for(int k=0;k<n; k++){
             yspl[0] += y[k];
         }
-        System.out.printf("%.2f ", yspl[0]);
         
         for(int i=1; i<yspl.length; i++){
             for(int k=0; k<n; k++){
                 yspl[i] += m.getElmt(k, i-1)*y[k];
             }
-            System.out.printf("%.2f ", yspl[i]);
         }
+
+        Matrix eliminated = gauss(combin, yspl);
+        double[] ansArr = new double[combin.getCol()];
+        bSubSol(eliminated, yspl, ansArr);
+        System.out.println("");
+
+        double result = ansArr[0];
+        for(int i=1; i<ansArr.length; i++){
+            result += ansArr[i]*x[i-1] ;
+        }
+        System.out.println(result);
+
+        String persamaan = ""+ansArr[0];
+        for (int i = 1; i < ansArr.length; i++) {
+            if(ansArr[i]>0){
+                persamaan += "+"+ansArr[i] + "x["+i+"]";
+            } else{
+                persamaan += ansArr[i] + "x[" + i + "]";
+            }
+            
+        }
+        System.out.println(persamaan);
     }
 }

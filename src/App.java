@@ -181,17 +181,23 @@ public class App {
                         //    TestX[i] = sc.nextDouble();
                         //}
 
-                        double[][] m1 = new double[][]{
-                            {0.1, 0.003},
-                            {0.3, 0.067},
-                            {0.5, 0.148},
-                            {0.7, 0.248},
-                            {0.9, 0.370},
-                            {1.1, 0.518},
-                            {1.3, 0.697}
+                        // double[][] m1 = new double[][]{
+                        //     {0.1, 0.003},
+                        //     {0.3, 0.067},
+                        //     {0.5, 0.148},
+                        //     {0.7, 0.248},
+                        //     {0.9, 0.370},
+                        //     {1.1, 0.518},
+                        //     {1.3, 0.697}
+                        // };
+                        double[][] m1 = new double[][] {
+                            {8.0, 2.0794},
+                            {9.0, 2.1972},
+                            {9.5, 2.2513}
                         };
-                        double[] TestX = new double[]{0.2,0.55,0.85,1.28};
-
+                        // double[] TestX = new double[]{0.2,0.55,0.85,1.28};
+                        double[] TestX = new double[]{9.2};
+       
                         Matrix m = new Matrix(m1);
                         //fungsi interpolasi
                         MatrixUtil.polynomInterpolation(m, TestX);
@@ -248,7 +254,8 @@ public class App {
                         };
                         Matrix m = new Matrix(m1);
                         double[] y = new double[] { 0.90, 0.91, 0.96, 0.89, 1.00, 1.10, 1.15, 1.03, 0.77, 1.07, 1.07, 0.94, 1.10, 1.10, 1.10, 0.91, 0.87, 0.78, 0.82, 0.95 };
-                        MatrixUtil.regression(m, y);
+                        double[] x = new double[] {50,76,29.30};
+                        MatrixUtil.regression(m, y, x);
                     }else{
                         System.out.println("Masukkan nama file berisi titik untuk di regresi : ");
                         String nama = sc.nextLine();
