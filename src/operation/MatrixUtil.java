@@ -20,15 +20,15 @@ public class MatrixUtil {
          */
         int n = b.length;
         // Eliminasi
-        for (int i = 0; i <= n - 2; i++) {
-            for (int j = i + 1; j < n; j++) {
+        for (int i = 0; i <= m.getRow() - 2; i++) {
+            for (int j = i + 1; j < m.getRow(); j++) {
 
                 if (m.getElmt(j, i) == 0) {
                     continue;
                 }
                 double multiplier = m.getElmt(i, i) / m.getElmt(j, i);
 
-                for (int k = i; k < n; k++) {
+                for (int k = i; k < m.getCol(); k++) {
                     double valRowReducted = m.getElmt(i, k) - multiplier * m.getElmt(j, k);
                     m.setElmt(j, k, valRowReducted);
                 }
@@ -37,10 +37,10 @@ public class MatrixUtil {
         }
 
         // Konversi ke leading one
-        for (int i = 0; i <= n - 1; i++) {
+        for (int i = 0; i <= m.getCol() - 1; i++) {
             if (m.getElmt(i, i) != 0 && m.getElmt(i, i) != 1) {
                 double pembagi = m.getElmt(i, i);
-                for (int j = i; j < n; j++) {
+                for (int j = i; j < m.getRow(); j++) {
                     double rowLeadingOne = m.getElmt(i, j) / pembagi;
                     m.setElmt(i, j, rowLeadingOne);
                 }
@@ -146,9 +146,9 @@ public class MatrixUtil {
             System.out.println("SPL memiliki solusi unik.");
 
             ansArr[m.getRow() - 1] = b[m.getRow() - 1];
-            for (int i = b.length - 2; i >= 0; i--) {
+            for (int i = m.getRow() - 2; i >= 0; i--) {
                 double sumRow = 0;
-                for (int j = i + 1; j < n; j++) {
+                for (int j = i + 1; j < m.getCol(); j++) {
                     sumRow += ansArr[j] * m.getElmt(i, j);
                 }
                 ansArr[i] = b[i] - sumRow;
