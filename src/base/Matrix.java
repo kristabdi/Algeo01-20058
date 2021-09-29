@@ -53,11 +53,7 @@ public class Matrix {
     public void printMatrix() {
         for (int i =0; i < row; i++) {
             for (int j=0; j < col; j++) {
-                if (j==row-1) {
-                    System.out.printf("%.2f", elements[i][j]);
-                } else {
-                    System.out.printf("%.2f ", elements[i][j]);
-                }
+                System.out.printf("%.2f ", elements[i][j]);  
             }
             System.out.println();
         }
