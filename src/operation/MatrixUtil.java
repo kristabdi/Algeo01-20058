@@ -1,7 +1,5 @@
 package operation;
-
-import java.util.Arrays;
-import static java.lang.Math.abs;
+import java.lang.Math;
 import base.Matrix;
 
 public class MatrixUtil {
@@ -321,6 +319,71 @@ public class MatrixUtil {
             colB += 1;
         }
         return ansArr;
+    }
+
+    public static double DetRowRed(Matrix m){
+        double det;
+        boolean aRowZero = false;
+        int nRow = m.getRow(), nCol = m.getCol();
+        int p = 0; // times swapping row
+        if(m.getRow() == 2){
+            det = m.getElmt(0, 0)*m.getElmt(1, 1) - m.getElmt(0, 1)*m.getElmt(1, 0);
+        }
+        else{
+            for(int i = 0; i < nRow;i++){
+                int countzero = 0;
+                for(int j = 0; j < nCol; j++){
+                    if(m.getElmt(i, j) == 0){
+                        countzero++;
+                    }
+                }
+                if(countzero == nCol){
+                    aRowZero = true;
+                    break;
+                }
+            }
+            if(aRowZero){
+                det = 0;
+            }else{
+                if(m.getElmt(0, 0)==0){
+                    boolean notZero = false;
+                    int row = 1;
+                    while (notZero == false){
+                        if(m.getElmt(row, 0)!=0){
+                            notZero = true;
+                        }else{
+                            row++;
+                        }
+                    }
+                    swapRow(m, 0, row);
+                    p++;
+                }
+
+                for(int col=0;col<nCol;col++){
+                    if(col!=nCol-1){
+                        for(int row=col+1;row<nRow;row++){
+                            double factor = m.getElmt(row, col)/m.getElmt(col, col);
+                            double newval = m.getElmt(row, col)-factor*m.getElmt(col, col);
+                            m.setElmt(row, col, newval);
+
+                            //ubah sebaris
+                            for(int i=0;i<nCol;i++){
+                                double valnew = m.getElmt(row, i)-factor*m.getElmt(row,col);
+                                m.setElmt(row, i, valnew);
+                            }
+                        }
+                    }
+                }
+                det = Math.pow((-1), p);
+                System.out.println("sementara "+det);
+                for(int a=0;a<nRow;a++){
+                    det *= m.getElmt(a, a);
+                    System.out.println("sementara "+det);
+                }
+                
+            }
+        }
+        return det;
     }
 
     // Inverse Adjoin
