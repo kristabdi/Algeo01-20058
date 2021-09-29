@@ -297,16 +297,22 @@ public class App {
 
         //Contoh Penggunaan Gauss
         double[][] mat = new double[][] { 
-            {3, 2, -4},
-            {2, 3, 3},
-            {5, -3, 1},
+            {0, 7, -1, 3, 1},
+            {0, 3, 4, 1, 7},
+            {6, 2, 0, 2, -1},
+            {2, 1, 2, 0, 2},
+            {3, 4, 1, -2, 1}
         };
-        double[] b = new double[] {3, 15, 14};
+        double[] b = new double[] {5, 7, 2, 3, 4};
         Matrix m = new Matrix(mat);
         Matrix a = MatrixUtil.gauss(m, b);
         double[] ansArr = new double[a.getCol()];
-        // MatrixUtil.bSubSol(a,b,ansArr);
+        MatrixUtil.bSubSol(a,b,ansArr);
         a.printMatrix();
+        System.out.println();
+        for (int i = 0; i < ansArr.length; i++) {
+            System.out.printf("%.2f" ,ansArr[i]);
+        }
     }
 
     public static void TulisMenuAwal() {
