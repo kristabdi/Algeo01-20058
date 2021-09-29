@@ -11,6 +11,19 @@ public class MatrixUtil {
         forwardElim(x, b);
         return x;
     }
+    // Pivot
+    // int idx_max = i;
+    // double max  = m.getElmt(idx_max,i);
+    // for (int j=i+1; j < m.getRow(); j++) {
+    //     if (Math.abs(m.getElmt(j,i)) > max) {
+    //         idx_max = j;
+    //         max = m.getElmt(j,i);
+    //     }
+    // }
+
+    // if (idx_max != i) {
+    //     swapRow(m, i, idx_max);
+    // }
 
     public static void forwardElim(Matrix m, double[] b) {
         /*
@@ -18,44 +31,46 @@ public class MatrixUtil {
          * 0,0; mengubah semua elemen menjadi 0 setelah dikalikan pengali dengan
          * dikurangi elemen baris pertama Lalu, substitusi balik, untuk mendapat solusi
          */
-        int n = b.length;
         // Eliminasi
-        for (int i = 0; i <= m.getRow() - 2; i++) {
-            for (int j = i + 1; j < m.getRow(); j++) {
+        m = augmented(m, b);
+        
 
-                if (m.getElmt(j, i) == 0) {
-                    continue;
-                }
-                double multiplier = m.getElmt(i, i) / m.getElmt(j, i);
+        // for (int i = 0; i <= m.getRow() - 2; i++) {
+        //     for (int j = i + 1; j < m.getRow(); j++) {
 
-                for (int k = i; k < m.getCol(); k++) {
-                    double valRowReducted = m.getElmt(i, k) - multiplier * m.getElmt(j, k);
-                    m.setElmt(j, k, valRowReducted);
-                }
-                b[j] = b[i] - multiplier * b[j];
-            }
-        }
+        //         if (m.getElmt(j, i) == 0) {
+        //             continue;
+        //         }
+        //         double multiplier = m.getElmt(i, i) / m.getElmt(j, i);
 
-        // Konversi ke leading one
-        for (int i = 0; i <= m.getCol() - 1; i++) {
-            if (m.getElmt(i, i) != 0 && m.getElmt(i, i) != 1) {
-                double pembagi = m.getElmt(i, i);
-                for (int j = i; j < m.getRow(); j++) {
-                    double rowLeadingOne = m.getElmt(i, j) / pembagi;
-                    m.setElmt(i, j, rowLeadingOne);
-                }
-                b[i] /= pembagi;
-            }
-        }
+        //         for (int k = i; k < m.getCol(); k++) {
+        //             double valRowReducted = m.getElmt(i, k) - multiplier * m.getElmt(j, k);
+        //             m.setElmt(j, k, valRowReducted);
+        //         }
+        //         b[j] = b[i] - multiplier * b[j];
+        //     }
+        // }
 
-        // Swap Row With All Zero
-        int countLowerRowZero = 0;
-        for (int i=0; i < m.getRow(); i++) {
-            if (m.isRowSPLZero(i)) {
-                swapRow(m, i, m.getCol()-1-countLowerRowZero);
-                countLowerRowZero++;
-            }
-        }
+        // // Konversi ke leading one
+        // for (int i = 0; i <= m.getCol() - 1; i++) {
+        //     if (m.getElmt(i, i) != 0 && m.getElmt(i, i) != 1) {
+        //         double pembagi = m.getElmt(i, i);
+        //         for (int j = i; j < m.getRow(); j++) {
+        //             double rowLeadingOne = m.getElmt(i, j) / pembagi;
+        //             m.setElmt(i, j, rowLeadingOne);
+        //         }
+        //         b[i] /= pembagi;
+        //     }
+        // }
+
+        // // Swap Row With All Zero
+        // int countLowerRowZero = 0;
+        // for (int i=0; i < m.getRow(); i++) {
+        //     if (m.isRowSPLZero(i)) {
+        //         swapRow(m, i, m.getRow()-1-countLowerRowZero);
+        //         countLowerRowZero++;
+        //     }
+        // }
     }
 
     public static void swapRow(Matrix m, int row1, int row2) {
@@ -63,10 +78,7 @@ public class MatrixUtil {
         int n = m.getCol();
         for (int j=0; j < n; j++) {
             temp[j] = m.getElmt(row1,j);
-            m.setElmt(row2,j,m.getElmt(row1,j));           
-        }
-
-        for (int j=0; j < n; j++) {
+            m.setElmt(row2,j,m.getElmt(row1,j));
             m.setElmt(row1,j,temp[j]);           
         }
     }
@@ -160,6 +172,20 @@ public class MatrixUtil {
         }
     }
 
+    public static Matrix augmented(Matrix m, double[] b) {
+        Matrix mNew = new Matrix(m.getRow()+1, m.getCol()+1);
+        for (int i = 0; i < mNew.getRow(); i++) {
+            for (int j = 0; j < mNew.getCol(); j++) {
+                if (j == mNew.getCol()-1) {
+                    mNew.setElmt(i ,j, b[i]);
+                } else {
+                    mNew.setElmt(i ,j, m.getElmt(i,j));
+                }            
+            }
+        }
+        return mNew;
+    }
+
     public static Matrix gaussJ(Matrix m, double[] b) {
         int nRow = m.getRow(), nCol = m.getCol();
         double temp;
@@ -176,8 +202,8 @@ public class MatrixUtil {
                 if(m.getElmt(i,0) != 0){
                     for(int j = 0; j<nCol;j++){
                         temp = m.getElmt(0,j);
-                        m.setElmt(0, i, m.getElmt(i,j));
-                        m.setElmt(i,j, temp);
+                        m.setElmt(0, j, m.getElmt(i,j));
+                        m.setElmt(i, j, temp);
                     }
                     temp = b[0];
                     b[0] = b[i];
@@ -207,9 +233,10 @@ public class MatrixUtil {
             if(m.getElmt(i, col)!=1){
                 double factor = m.getElmt(i, col);
                 for(int j=col;j<nCol;j++){
-                    m.setElmt(i,j,m.getElmt(i,j)/factor);
+                    double newval = m.getElmt(i, j)/factor;
+                    m.setElmt(i, j, newval);
                     if(m.getElmt(i,j)==(-0)){
-                        m.setElmt(i,j, Math.abs(m.getElmt(i,j)));
+                        m.setElmt(i, j, 0);
                     }
                 }
                 b[i] /= factor;
@@ -220,15 +247,14 @@ public class MatrixUtil {
                 if(k==i || m.getElmt(k,col) == 0){
                     continue;
                 }
-                double faktor = m.getElmt(k,col);    
+                double faktor = m.getElmt(k, col);    
                 for(int l=0;l<nCol;l++){
-                    double newVal = m.getElmt(k,l) - faktor*m.getElmt(k,l);
+                    double newVal = m.getElmt(k,l) - faktor*m.getElmt(i,l);
                     m.setElmt(k, l, newVal);
                 }
                 b[k] = b[k] - faktor*b[i];
             } 
         }
-        m.printMatrix();
         return m;
     }
 
