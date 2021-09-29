@@ -459,24 +459,32 @@ public class MatrixUtil {
 
         Matrix eliminated = gauss(combin, yspl);
         double[] ansArr = new double[combin.getCol()];
-        bSubSol(eliminated, yspl, ansArr);
-        System.out.println("");
+        ansArr[eliminated.getRow() - 1] = yspl[eliminated.getRow() - 1];
+        for (int i = yspl.length - 2; i >= 0; i--) {
+            double sumRow = 0;
+            for (int j = i + 1; j < yspl.length; j++) {
+                sumRow += ansArr[j] * eliminated.getElmt(i, j);
+            }
+            ansArr[i] = yspl[i] - sumRow;
+        }
 
         double result = ansArr[0];
         for(int i=1; i<ansArr.length; i++){
             result += ansArr[i]*x[i-1] ;
         }
-        System.out.println(result);
-
-        String persamaan = ""+ansArr[0];
+        
+        String persamaan = ""+ ansArr[0];
         for (int i = 1; i < ansArr.length; i++) {
             if(ansArr[i]>0){
-                persamaan += "+"+ansArr[i] + "x["+i+"]";
+                persamaan += "+"+ ansArr[i] + "x"+i;
             } else{
-                persamaan += ansArr[i] + "x[" + i + "]";
+                persamaan += ansArr[i] + "x" + i;
             }
             
         }
+        combin.printMatrix();
+        System.out.println();
         System.out.println(persamaan);
+        System.out.println(result);
     }
 }
