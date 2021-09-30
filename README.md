@@ -1,7 +1,7 @@
 # Algeo01-20058
 
 ## Struktur Direktori
-#### src
+### src
 Berisi source code driver, strukdat, maupun operasi Matriks.
 App.java -> driver main.
 #### base
