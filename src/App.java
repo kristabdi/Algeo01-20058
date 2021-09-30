@@ -16,7 +16,8 @@ public class App {
         String nama, answer;
         char jawab;
         int m, n;
-        double[] b, ans;
+        double det;
+        double[] b, ans, y, x;
         Matrix a, aug;
         Scanner scn = new Scanner(System.in);
         System.out.println("Selamat datang di aplikasi slonongboy!\nSilakan pilih salah satu menu dibawah ini!");
@@ -44,7 +45,10 @@ public class App {
 
                 if(submenu==1){
                     a = MatrixUtil.gauss(a, b);
-                    answer = makeString(a);
+                    ans = new double[a.getCol()];
+                    MatrixUtil.bSubSol(a, b, ans);
+                    answer = ans.toString();
+                    System.out.println(answer);
                     System.out.println("Apakah ingin save ke file? (Y/N)");
                     jawab = scn.next().charAt(0);
                     if(jawab=='Y'){
@@ -53,11 +57,11 @@ public class App {
                 }
                 else if(submenu==2){
                     a = MatrixUtil.gaussJ(a, b);
+                    ans = new double[a.getCol()];
+                    MatrixUtil.bSubSol(a, b, ans);
+                    answer = ans.toString();
                     answer = makeString(a);
-                    a.printMatrix();
-                    for(int i = 0; i<a.getRow();i++){
-                        System.out.println(b[i]);
-                    }
+                    System.out.println(answer);
                     System.out.println("Apakah ingin save ke file? (Y/N)");
                     jawab = scn.next().charAt(0);
                     if(jawab=='Y'){
@@ -65,21 +69,27 @@ public class App {
                     }
                 }
                 else if(submenu==3){
-                    ans = MatrixUtil.balikan(a, b);
-                    answer = ans.toString();
+                    answer = MatrixUtil.balikan(a, b);
+                    System.out.println(answer);
                     System.out.println("Apakah ingin save ke file? (Y/N)");
                     jawab = scn.next().charAt(0);
                     if(jawab=='Y'){
                         WriteToFile(answer);
                     }
+
                 }
                 else{
-                    ans = MatrixUtil.cramer(a, b);
-                    answer = ans.toString();
-                    System.out.println("Apakah ingin save ke file? (Y/N)");
-                    jawab = scn.next().charAt(0);
-                    if(jawab=='Y'){
-                        WriteToFile(answer);
+                    if(a.isSquare()){
+                        ans = MatrixUtil.cramer(a, b);
+                        answer = ans.toString();
+                        System.out.println(answer);
+                        System.out.println("Apakah ingin save ke file? (Y/N)");
+                        jawab = scn.next().charAt(0);
+                        if(jawab=='Y'){
+                            WriteToFile(answer);
+                        }
+                    }else{
+                        System.out.println("Matriks bukan persegi. Silakan gunakan cara lain!");
                     }
                 }
                 System.out.println("===============================");
@@ -88,17 +98,164 @@ public class App {
             else if(menupilihan==2){
                 TulisSubMenuDet();
                 submenu = scn.nextInt();
-
-                System.out.println("Determinan");
+                input = PilihInput();
+                if(input == 1){
+                    System.out.println("Masukkan baris matriks");
+                    m = scn.nextInt();
+                    System.out.println("Masukkan kolom matriks");
+                    n = scn.nextInt();
+                    a = inputMatKeyboard(m, n);
+                }
+                else{
+                    System.out.println("Masukkan nama file ");
+                    nama = sc.nextLine();
+                    aug = inputFile(nama);
+                    a = aug;
+                }
+                if(submenu==1){
+                    if(a.isSquare()){
+                        det = MatrixUtil.DetRowRed(a);
+                        System.out.println("Determinan matriks adalah "+det);
+                        answer = String.format("%.2f", det);
+                        System.out.println("Apakah ingin save ke file? (Y/N)");
+                        jawab = scn.next().charAt(0);
+                        if(jawab=='Y'){
+                            WriteToFile(answer);
+                        }
+                    }
+                    else{
+                        System.out.println("Matriks bukan persegi. Tidak ada determinan");
+                    }
+                }else{
+                    if(a.isSquare()){
+                        det = a.getDeterminantCofactor();
+                        System.out.println("Determinan matriks adalah "+det);
+                        answer = String.format("%.2f", det);
+                        System.out.println("Apakah ingin save ke file? (Y/N)");
+                        jawab = scn.next().charAt(0);
+                        if(jawab=='Y'){
+                            WriteToFile(answer);
+                        }
+                    }
+                    else{
+                        System.out.println("Matriks bukan persegi. Tidak ada determinan");
+                    }
+                }
+                System.out.println("===============================");
             }
             else if(menupilihan==3){
-                System.out.println("Matriks Balikan");
+                TulisSubMenuBalikan();
+                submenu = scn.nextInt();
+                input = PilihInput();
+                if(input == 1){
+                    System.out.println("Masukkan baris matriks");
+                    m = scn.nextInt();
+                    System.out.println("Masukkan kolom matriks");
+                    n = scn.nextInt();
+                    a = inputMatKeyboard(m, n);
+                }
+                else{
+                    System.out.println("Masukkan nama file ");
+                    nama = sc.nextLine();
+                    aug = inputFile(nama);
+                    a = aug;
+                }
+                if(submenu==1){
+                    //reduksi baris
+                    if(a.isSquare() && MatrixUtil.DetRowRed(a)!=-9999){
+                        a = MatrixUtil.inverseRowReduction(a);
+                        answer = makeString(a);
+                        System.out.println("Apakah ingin save ke file? (Y/N)");
+                        jawab = scn.next().charAt(0);
+                        if(jawab=='Y'){
+                            WriteToFile(answer);
+                        }
+                    }
+                    else{
+                        System.out.println("Matriks bukan persegi atau tidak ada determinan. Tidak dapat di-inverse");
+                    }
+                }else{
+                    //adjoin
+                    if(a.isSquare()&&MatrixUtil.DetRowRed(a)!=-9999){
+                        a = MatrixUtil.inverseAdjoin(a);
+                        answer = makeString(a);
+                        System.out.println("Apakah ingin save ke file? (Y/N)");
+                        jawab = scn.next().charAt(0);
+                        if(jawab=='Y'){
+                            WriteToFile(answer);
+                        }
+                    }
+                    else{
+                        System.out.println("Matriks bukan persegi atau tidak ada determinan. Tidak dapat di-inverse");
+                    }
+                }
+                System.out.println("===============================");
             }
             else if(menupilihan==4){
-                System.out.println("Interpolasi Polinom");
+                input = PilihInput();
+                if(input == 1){
+                    System.out.println("Masukkan jumlah titik");
+                    m = scn.nextInt();
+                    a = inputMatKeyboard(m, 2);
+                }
+                else{
+                    System.out.println("Masukkan nama file ");
+                    nama = sc.nextLine();
+                    aug = inputFile(nama);
+                    a = aug;
+                }
+                System.out.println("Masukkan jumlah titik yang akan ditaksir nilai fungsinya");
+                n = scn.nextInt();
+                double[] xk = new double[n];
+                for(int i = 0;i<n;i++){
+                    xk[i] = scn.nextDouble();
+                }
+                answer = MatrixUtil.polynomInterpolation(a, xk);
+                System.out.println("Apakah ingin save ke file? (Y/N)");
+                jawab = scn.next().charAt(0);
+                if(jawab=='Y'){
+                    WriteToFile(answer);
+                }
+                System.out.println("===============================");
             }
             else if(menupilihan==5){
-                System.out.println("Regresi Linier Berganda");
+                input = PilihInput();
+                if(input == 1){
+                    System.out.println("Masukkan jumlah peubah x");
+                    n = scn.nextInt();
+                    System.out.println("Masukkan jumlah variabel");
+                    m = scn.nextInt();
+                    a = inputMatKeyboard(m, n);
+                    System.out.println("Masukkan nilai y!");
+                    y = new double[m];
+                    for(int i = 0; i < m;i++){
+                        y[i] = scn.nextDouble();
+                    }
+                    System.out.println("Masukkan nilai x yang akan ditaksir!");
+                    x = new double[n];
+                    for(int i = 0; i < n;i++){
+                        x[i] = scn.nextDouble();
+                    }
+                }
+                else{
+                    System.out.println("Masukkan nama file ");
+                    nama = sc.nextLine();
+                    aug = inputFile(nama);
+                    a = aug;
+                    System.out.println("Masukkan nilai y!");
+                    m = a.getRow();
+                    n = a.getCol();
+                    y = new double[m];
+                    for(int i = 0; i < m;i++){
+                        y[i] = scn.nextDouble();
+                    }
+                    System.out.println("Masukkan nilai x yang akan ditaksir!");
+                    x = new double[n];
+                    for(int i = 0; i < n;i++){
+                        x[i] = scn.nextDouble();
+                    }
+                }
+                System.out.println("===============================");
             }
             TulisMenuAwal();
             menupilihan = scn.nextInt();
@@ -127,12 +284,14 @@ public class App {
 
     public static void WriteToFile(String m) {
         try {
-            System.out.println("Masukkan nama baru file : ");
-            String nama = sc.nextLine();
+            Path curpath = Paths.get("");
+            String nama = curpath.toAbsolutePath().toString();
+            nama += "\\";
+            nama += sc.nextLine();
             FileWriter myWriter = new FileWriter(nama);
             myWriter.write(m);
             myWriter.close();
-            System.out.println("Berhasil menulis ke "+nama);
+            System.out.println("Successfully wrote to the "+nama);
         } catch (IOException e) {
               System.out.println("An error occurred.");
               e.printStackTrace();
