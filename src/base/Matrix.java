@@ -74,13 +74,11 @@ public class Matrix {
     // Method
     public int getCountZero(int rw){
         int zero = 0;
-
         for(int j=0; j<getCol(); j++){
             if(getElmt(rw, j)==0.0){
                 zero++;
             }
         }
-
         return zero;
     }
     public double getDeterminantCofactor() {
@@ -120,7 +118,5 @@ public class Matrix {
             return -9999.000;
         }
     }
-    public double getDeterminantOBE() {
-        return 0.0;
-    }
+    
 }

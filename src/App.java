@@ -1,314 +1,143 @@
 import operation.MatrixUtil;
 import base.Matrix;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class App {
+    static Scanner sc = new Scanner(System.in);
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+        int menupilihan, submenu, input;
+        String nama, answer;
+        char jawab;
+        int m, n;
+        double[] b, ans;
+        Matrix a, aug;
+        Scanner scn = new Scanner(System.in);
+        System.out.println("Selamat datang di aplikasi slonongboy!\nSilakan pilih salah satu menu dibawah ini!");
         TulisMenuAwal();
-        Matrix a = new Matrix(1,1);
-        int con = sc.nextInt(); // pilihan menu awal
-        while(con < 6){
-            if(con>=1 && con <= 3){
-                if(con == 1){
-                    //Sistem Persamaan Linier
-                    TulisSubMenuSPL();
-                    int metSPL = sc.nextInt();
-                    int input = PilihInput(); // cara input
-                    if(input==1){
-                        //baca input keyboard
-                        System.out.println("Masukkan jumlah baris matriks : ");
-                        int m = sc.nextInt(); // row
-                        System.out.println("Masukkan jumlah kolom matriks : ");
-                        int n = sc.nextInt(); // col
-                        // inisialisasi matrix
-                        System.out.println("Masukkan elemen matriks a!");
-                        a = inputKeyboard(m, n);
-                        double b[] = new double[m];
-                        System.out.println("Masukkan elemen matriks b!");
-                        for(int i = 0; i<m;i++){
-                            double val = sc.nextDouble();
-                            b[i] = val;
-                        }
-                        //double[][] x = new double[][] { 
-                        //    {2, 0, 8, 0},
-                        //    {0, 1, 0, 4},
-                        //    {-4, 0, 6, 0},
-                        //    {0, -2, 0, 3},
-                        //    {2, 0, -4, 0},
-                        //    {0, 1, 0, -2}
-                        //};
-                        //double[] b = new double[] {8, 6, 6, -1, -4, 0};
-                        //Matrix m = new Matrix(x);
-                        if(metSPL == 1){
-                            //SPL - Gauss
-                            a = MatrixUtil.gauss(a, b);
-                        }
-                        else if(metSPL == 2){
-                            //SPL - Gauss Jordan
-                            a = MatrixUtil.gaussJ(a, b);
-                            //double[] ansArr = new double[a.getCol()];
-                        }
-                        else if(metSPL == 3){
-                            //SPL - Matriks Balikan
-                            MatrixUtil.balikan(a, b);
-                        }
-                        else if(metSPL == 4){
-                            //SPL - Cramer
-                            MatrixUtil.cramer(a, b);
-                        }
-                    }
-                    else{
-                        // baca matrix dari file
-                        System.out.println("Masukkan nama file berisi matriks augmented : ");
-                        String nama = sc.nextLine();
-                        a = inputFile(nama); // matrix input
-                        double b[] = new double[a.getRow()]; // matrix b
-                        Matrix a1 = new Matrix(a.getRow(), a.getCol()-1); // matrix a
-                        for(int i = 0; i < a1.getRow();i++){
-                            for(int j = 0; j < a1.getCol(); j++){
-                                double val = a.getElmt(i, j);
-                                a1.setElmt(i, j, val);
-                            }
-                        }
-                        for(int k=0;k<a.getRow();k++){
-                            double elm = a.getElmt(k, a.getCol()-1);
-                            b[k] = elm;
-                        }
-                        if(metSPL == 1){
-                            //SPL - Gauss
-                            a1 = MatrixUtil.gauss(a1, b);
-                        }
-                        else if(metSPL == 2){
-                            //SPL - Gauss Jordan
-                            a1 = MatrixUtil.gaussJ(a1, b);
-                        }
-                        else if(metSPL == 3){
-                            //SPL - Matriks Balikan
-                            MatrixUtil.balikan(a1, b);
-                        }
-                        else if(metSPL == 4){
-                            //SPL - Cramer
-                            MatrixUtil.cramer(a1, b);
-                        }
+        menupilihan = scn.nextInt();
+        while(menupilihan!=6){
+            if(menupilihan==1){
+                TulisSubMenuSPL();
+                submenu = scn.nextInt();
+                input = PilihInput();
+                if(input==1){
+                    System.out.println("Masukkan baris matriks A ");
+                    m = scn.nextInt();
+                    System.out.println("Masukkan kolom matriks A ");
+                    n = scn.nextInt();
+                    a = inputMatKeyboard(m, n);
+                    b = inputArrKeyboard(m);
+                }else{
+                    System.out.println("Masukkan nama file ");
+                    nama = sc.nextLine();
+                    aug = inputFile(nama);
+                    a = matAugmented(aug);
+                    b = arrAugmented(aug);
+                }
+
+                if(submenu==1){
+                    a = MatrixUtil.gauss(a, b);
+                    answer = makeString(a);
+                    System.out.println("Apakah ingin save ke file? (Y/N)");
+                    jawab = scn.next().charAt(0);
+                    if(jawab=='Y'){
+                        WriteToFile(answer);
                     }
                 }
-                else if(con == 2){
-                    //determinan
-                    TulisSubMenuDet();
-                    int metDet = sc.nextInt();
-                    int input = PilihInput(); // cara input
-                    if(input == 1){
-                        System.out.println("Masukkan jumlah baris dan kolom matriks : ");
-                        int n = sc.nextInt();
-                        System.out.println("Masukkan elemen matriks!");
-                        a = inputKeyboard(n, n);
-                        if(metDet==1){
-                            double det = MatrixUtil.DetRowRed(a);
-                            System.out.println("Determinan matriks adalah "+det);
-                        }else{
-                            //ekspansi kofaktor
-                        }
-                    }else{
-                        System.out.println("Masukkan nama file berisi matriks augmented : ");
-                        String nama = sc.nextLine();
-                        a = inputFile(nama);
-                        if(metDet==1){
-                            double det = MatrixUtil.DetRowRed(a);
-                        }else{
-                            //ekspansi kofaktor
-                        }
+                else if(submenu==2){
+                    a = MatrixUtil.gaussJ(a, b);
+                    answer = makeString(a);
+                    a.printMatrix();
+                    for(int i = 0; i<a.getRow();i++){
+                        System.out.println(b[i]);
+                    }
+                    System.out.println("Apakah ingin save ke file? (Y/N)");
+                    jawab = scn.next().charAt(0);
+                    if(jawab=='Y'){
+                        WriteToFile(answer);
                     }
                 }
-                else if(con == 3){
-                    //matriks balikan
-                    TulisSubMenuBalikan();
-                    int metBal = sc.nextInt();
-                    while(!(isValid(metBal, 1, 2))){
-                        System.out.println(("Isi ulang!"));
-                        metBal = sc.nextInt();
+                else if(submenu==3){
+                    ans = MatrixUtil.balikan(a, b);
+                    answer = ans.toString();
+                    System.out.println("Apakah ingin save ke file? (Y/N)");
+                    jawab = scn.next().charAt(0);
+                    if(jawab=='Y'){
+                        WriteToFile(answer);
                     }
-                    int input = PilihInput(); // cara input
-                    while(!(isValid(input, 1, 2))){
-                        input = PilihInput();
+                }
+                else{
+                    ans = MatrixUtil.cramer(a, b);
+                    answer = ans.toString();
+                    System.out.println("Apakah ingin save ke file? (Y/N)");
+                    jawab = scn.next().charAt(0);
+                    if(jawab=='Y'){
+                        WriteToFile(answer);
                     }
-                    if(input==1){
-                        System.out.println("Masukkan jumlah baris dan kolom matriks : ");
-                        int n = sc.nextInt();
-                        System.out.println("Masukkan elemen matriks!");
-                        a = inputKeyboard(n, n);
-                        if(metBal==1){
-                            //reduksi baris
-                        }else{
-                            a = MatrixUtil.inverseAdjoin(a);
-                        }
-                    }else{
-                        System.out.println("Masukkan nama file berisi matriks augmented : ");
-                        String nama = sc.nextLine();
-                        a = inputFile(nama);
-                        if(metBal==1){
-                            //reduksi baris
-                        }else{
-                            a = MatrixUtil.inverseAdjoin(a);
-                        }
-                    }
+                }
+                System.out.println("===============================");
+
+            }
+            else if(menupilihan==2){
+                TulisSubMenuDet();
+                submenu = scn.nextInt();
+
+                System.out.println("Determinan");
+            }
+            else if(menupilihan==3){
+                System.out.println("Matriks Balikan");
+            }
+            else if(menupilihan==4){
+                System.out.println("Interpolasi Polinom");
+            }
+            else if(menupilihan==5){
+                System.out.println("Regresi Linier Berganda");
+            }
+            TulisMenuAwal();
+            menupilihan = scn.nextInt();
+        }
+    }
+
+    public static String makeString(Matrix m){
+        String mat = "";
+        for(int i = 0; i < m.getRow(); i++){
+            mat += "[";
+            for(int j = 0; j < m.getCol();j++){
+                if(j!=m.getCol()-1){
+                    mat += " ";
+                    mat += String.valueOf(m.getElmt(i, j));
+                }
+                else{
+                    mat += " ";
+                    mat += String.valueOf(m.getElmt(i, j));
+                    mat += ",";
                 }
             }
-            else{
-                if(con == 4){
-                    //interpolasi
-                    
-                     int input = 0;
-                     input = PilihInput(); // cara input
-                     while(!(isValid(input, 1, 2))){
-                         input = PilihInput();
-                     }
-                     if(input==1){
-                        System.out.println("Masukkan jumlah titik interpolasi!");
-                        int n = sc.nextInt();
-                        System.out.println("Masukkan titik-titik interpolasi!");
-                        a = inputKeyboard(n, 2); 
-                        System.out.println("Masukkan jumlah x yang akan ditaksir nilai fungsinya.");
-                        int nX = sc.nextInt();
-                        double TestX[] = new double[nX];
-                        System.out.println("Masukkan nilai x yang akan ditaksir nilai fungsinya.");
-                        for(int i =0;i<nX;i++){
-                            TestX[i] = sc.nextDouble();
-                        }
-
-        //                 // double[][] m1 = new double[][]{
-        //                 //     {0.1, 0.003},
-        //                 //     {0.3, 0.067},
-        //                 //     {0.5, 0.148},
-        //                 //     {0.7, 0.248},
-        //                 //     {0.9, 0.370},
-        //                 //     {1.1, 0.518},
-        //                 //     {1.3, 0.697}
-        //                 // };
-        //                 double[][] m1 = new double[][] {
-        //                     {8.0, 2.0794},
-        //                     {9.0, 2.1972},
-        //                     {9.5, 2.2513}
-        //                 };
-        //                 // double[] TestX = new double[]{0.2,0.55,0.85,1.28};
-        //                 double[] TestX = new double[]{9.2};
-       
-                         //Matrix m = new Matrix(m1);
-                         //fungsi interpolasi
-                         MatrixUtil.polynomInterpolation(a, TestX);
-                     }else{
-                         System.out.println("Masukkan nama file berisi titik interpolasi : ");
-                         String nama = sc.nextLine();
-                         a = inputFile(nama);
-                         //fungsi interpolasi
-                     }
-                 }
-                 else if(con == 5){
-                     //regresi
-                     int input = PilihInput(); // cara input
-                     while(!(isValid(input, 1, 2))){
-                         input = PilihInput();
-                     }
-                     if(input==1){
-                        System.out.println("Masukkan jumlah baris x : ");
-                        int i = sc.nextInt();
-                        System.out.println("Masukkan jumlah peubah x : ");
-                        int n = sc.nextInt();
-                        System.out.println("Masukkan nilai xni : ");
-                        Matrix xn = inputKeyboard(i, n); // nilai x1i, x2i, ...xni
-                        System.out.println("Masukkan nilai y : ");
-                        double y[] = new double[i];
-                        for(int j=0;j<i;j++){ //isi array of yn
-                            y[j] = sc.nextDouble();
-                        }
-                        double x[] = new double[n];
-                        for(int j=0;j<n;j++){ //isi array of x
-                            x[j] = sc.nextDouble();
-                        }
-
-        //                 double[][] m1 = new double[][] {
-        //                     {72.4, 76.3, 29.18},
-        //                     {41.6, 70.3, 29.35},
-        //                     {34.3, 77.1, 29.24},
-        //                     {35.1, 68.0, 29.27},
-        //                     {10.7, 79.0, 29.78},
-        //                     {12.9, 67.4, 29.39},
-        //                     {8.3, 66.8, 29.69},
-        //                     {20.1, 76.9, 29.48},
-        //                     {72.2, 77.7, 29.09},
-        //                     {24.0, 67.7, 29.60},
-        //                     {23.2, 76.8, 29.38},
-        //                     {47.4, 86.6, 29.35},
-        //                     {31.5, 76.9, 29.63},
-        //                     {10.6, 86.3, 29.56},
-        //                     {11.2, 86.0, 29.48},
-        //                     {73.3, 76.3, 29.40},
-        //                     {75.4, 77.9, 29.28},
-        //                     {96.6, 78.7, 29.29},
-        //                     {107.4, 86.8, 29.03},
-        //                     {54.9, 70.9, 29.37}
-        //                 };
-        //                 Matrix m = new Matrix(m1);
-        //                 double[] y = new double[] { 0.90, 0.91, 0.96, 0.89, 1.00, 1.10, 1.15, 1.03, 0.77, 1.07, 1.07, 0.94, 1.10, 1.10, 1.10, 0.91, 0.87, 0.78, 0.82, 0.95 };
-        //                 double[] x = new double[] {50,76,29.30};
-                         MatrixUtil.regression(xn, y, x);
-                     }else{
-                         System.out.println("Masukkan nama file berisi titik untuk di regresi : ");
-                         String nama = sc.nextLine();
-                         a = inputFile(nama);
-                     }
-                 }
-                 else{
-                     System.out.println("Masukkan angka dari menu yang tersedia!");
-                 }
-             }
-             TulisMenuAwal();
-             con = sc.nextInt();
-         }
-
-        // Contoh Penggunaan Cramer
-        // double[][] x = new double[][] {
-        // {5, -2, 2, 7},
-        // {1, 0, 0, 3},
-        // {-3, 1, 5, 0},
-        // {3, -1, -9, 4}
-        // };
-        // Matrix m = new Matrix(x);
-        // double[] b = new double[] {-4,-3};
-        // double[] ans = MatrixUtil.cramer(m,b);
-        // for (int i=0; i<ans.length; i++) {
-        // System.out.println(ans[i]);
-        // }
-
-        // Contoh Penggunaan Inverse
-        // double[][] x = new double[][] {
-        // {5, -2, 2, 7},
-        // {1, 0, 0, 3},
-        // {-3, 1, 5, 0},
-        // {3, -1, -9, 4}
-        // };
-        // Matrix m = new Matrix(x);
-        // Matrix a = MatrixUtil.inverseAdjoin(m);
-        // a.printMatrix();
-
-        ////Contoh Penggunaan Gauss
-        //double[][] mat = new double[][] { 
-        //    {3, 2, -4},
-        //    {2, 3, 3},
-        //    {5, -3, 1},
-        //};
-        //double[] b = new double[] {3, 15, 14};
-        //Matrix m = new Matrix(mat);
-        //Matrix a = MatrixUtil.gauss(m, b);
-        //double[] ansArr = new double[a.getCol()];
-        //// MatrixUtil.bSubSol(a,b,ansArr);
-        //a.printMatrix();
-        sc.close();
+            mat += "]\n";
+        }
+        return mat;
     }
+
+    public static void WriteToFile(String m) {
+        try {
+            System.out.println("Masukkan nama baru file : ");
+            String nama = sc.nextLine();
+            FileWriter myWriter = new FileWriter(nama);
+            myWriter.write(m);
+            myWriter.close();
+            System.out.println("Berhasil menulis ke "+nama);
+        } catch (IOException e) {
+              System.out.println("An error occurred.");
+              e.printStackTrace();
+        }
+      }
 
     public static void TulisMenuAwal() {
         System.out.println("Menu tersedia : ");
@@ -345,33 +174,49 @@ public class App {
     }
 
     public static int PilihInput() {
-        Scanner scn = new Scanner(System.in);
         System.out.println("Cara input : ");
         System.out.println("1. Dengan Keyboard");
         System.out.println("2. Dari file (augmented matriks)");
         System.out.println("Pilih : ");
-        int x = scn.nextInt();
+        int x = sc.nextInt();
         return x;
     }
 
-    public static boolean isValid(int val, int awal, int akhir) {
-        boolean valid = false;
-        if (val >= awal && val <= akhir) {
-            valid = true;
+    public static double[] arrAugmented(Matrix m){
+        double[] b = new double[m.getRow()];
+        for(int row=0;row<m.getRow();row++){
+            b[row] = m.getElmt(row,m.getCol()-1);
         }
-        return valid;
+        return b;
     }
 
-    public static Matrix inputKeyboard(int m, int n) {
+    public static Matrix matAugmented(Matrix m){
+        Matrix mnew = new Matrix(m.getRow(), m.getCol()-1);
+        for(int row=0;row<m.getRow();row++){
+            for(int col=0;col<m.getCol()-1;col++){
+                mnew.setElmt(row, col, m.getElmt(row,col));
+            }
+        }
+        return mnew;
+    }
+    public static double[] inputArrKeyboard(int n){
+        double[] b = new double[n];
+        System.out.println("Input array!");
+        for(int i = 0; i<n; i++){
+            double newone = sc.nextDouble();
+            b[i] = newone;
+        }
+        return b;
+    }
+    public static Matrix inputMatKeyboard(int m, int n) {
         Matrix m1 = new Matrix(m, n);
-        Scanner sc = new Scanner(System.in);
+        System.out.println("Input matrix!");
         for(int i = 0; i < m; i++){
             for(int j = 0 ; j < n; j++){
                 double val = sc.nextDouble();
                 m1.setElmt(i, j, val);
             }
         }
-        sc.close();
         return m1;
     }
 
@@ -380,12 +225,12 @@ public class App {
         Matrix mNot = new Matrix(1, 1);
         try {
             File myFile = new File(nama);
-            Scanner sc = new Scanner(myFile);
+            Scanner scn = new Scanner(myFile);
             int m = 0; // row
             int n = 0; // cols
 
-            while (sc.hasNextLine()) {
-                String data = sc.nextLine();
+            while (scn.hasNextLine()) {
+                String data = scn.nextLine();
                 String arrStr[] = data.split(" ");
                 n = 0;
                 for (String i : arrStr) {
@@ -406,7 +251,7 @@ public class App {
                 }
                 i++;
             }
-            sc.close();
+            scn.close();
             sc2.close();
             return m1;
         } catch (FileNotFoundException e) {
