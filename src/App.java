@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.*;
 import java.util.Scanner;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -43,10 +44,11 @@ public class App {
                     a = matAugmented(aug);
                     b = arrAugmented(aug);
                 }
-                File namef = new File("default.txt");
                 String names ="default.txt";
+                nama = (Path.of("../test", names)).toString();
+                File namef = new File(nama);
                 try{
-                    PrintStream o = new PrintStream(names);
+                    PrintStream o = new PrintStream(nama);
                     if(submenu==1){ //gauss
                         a = MatrixUtil.gauss(a, b);
                         ans = new double[a.getCol()];
@@ -58,8 +60,8 @@ public class App {
                             System.out.println("Tulis nama file!");
                             names = sc.nextLine();
                             names = sc.nextLine();
-                            File name = new File(names);
-                            namef.renameTo(name);
+                            Path source = Paths.get("../test/default.txt");
+                            Files.move(source, source.resolveSibling(names));
                         }else{
                             namef.delete();
                         }
@@ -411,6 +413,7 @@ public class App {
         // Buat matriks dari matriks augmented file
         Matrix mNot = new Matrix(1, 1);
         try {
+            nama = (Path.of("../test", nama)).toString();
             File myFile = new File(nama);
             Scanner scn = new Scanner(myFile);
             int m = 0; // row
