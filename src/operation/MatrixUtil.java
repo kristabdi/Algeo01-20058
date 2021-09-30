@@ -16,58 +16,77 @@ public class MatrixUtil {
          * 0,0; mengubah semua elemen menjadi 0 setelah dikalikan pengali dengan
          * dikurangi elemen baris pertama Lalu, substitusi balik, untuk mendapat solusi
         */                                               
-        // Eliminasi
-        double t_min = 1e-9;
-            
-        for (int i = 0; i < m.getRow()-1 ; i++) {
-            if (Math.abs(m.getElmt(i,i)) < t_min) {
-                for (int j = i+1; j < m.getRow(); j++) {
-                    if (Math.abs(m.getElmt(j, i)) > Math.abs(m.getElmt(i, i))) {
-                        swapRow(m, i, j);
-                        break;
-                    }
+        int nRow = m.getRow(), nCol = m.getCol();
+        // mastiin a(0,0) bukan 0, kalau 0 dituker
+        if (m.getElmt(0, 0) == 0) {
+            for (int row=0; row < nRow; row++){
+                if ( m.getElmt(row,0) != 0) {
+                    swapRow(m, row, 0);
+                    double temp = b[0];
+                    b[0] = b[row];
+                    b[row] = b[0];
+                    break;
                 }
-            }
-            for (int j = i + 1; j < m.getRow(); j++) {
-                if (m.getElmt(j, i) == 0) {
-                    continue;
-                }
-                double multiplier = m.getElmt(i, i) / m.getElmt(j, i);
-
-                for (int k = i; k < m.getCol(); k++) {
-                    double valRowReducted = m.getElmt(i, k) - multiplier * m.getElmt(j, k);
-                    m.setElmt(j, k, valRowReducted);
-                    m.printMatrix();    
-                    System.out.println();
-                }
-                b[j] = b[i] - multiplier * b[j];
             }
         }
 
-        // Konversi ke leading one
-        for (int i = 0; i <= m.getRow() - 1; i++) {
-            if (m.getElmt(i, i) != 0 && m.getElmt(i, i) != 1) {
-                double pembagi = m.getElmt(i, i);
-                for (int j = i; j < m.getCol(); j++) {
-                    double rowLeadingOne = m.getElmt(i, j) / pembagi;
-                    m.setElmt(i, j, rowLeadingOne);
+        for(int i = 0; i<nRow; i++){
+            int col = i;
+            boolean isAllZero = true;
+            for(int j = 0; j<nCol;j++){
+                if(m.getElmt(i,j)!=0){
+                    isAllZero = false;
                 }
-                b[i] /= pembagi;
             }
+            if(isAllZero==true){
+                break;
+            }
+            while(m.getElmt(i, col)==0 && col<nCol){
+                col++;
+            }
+            //jadiin 1 yg didepan, bagi sebaris
+            if(m.getElmt(i, col)!=1){
+                double factor = m.getElmt(i, col);
+                for(int j=col;j<nCol;j++){
+                    double newval = m.getElmt(i, j)/factor;
+                    m.setElmt(i, j, newval);
+                    if(m.getElmt(i,j)==(-0)){
+                        m.setElmt(i, j, 0);
+                    }
+                }
+                b[i] /= factor;
+            }
+
+            //jadiin 00000
+            for(int k = i+1; k <= nRow-1;k++){
+                if(m.getElmt(k,col) == 0){
+                    continue;
+                }
+                double faktor = m.getElmt(k, col);    
+                for(int l=0;l<nCol;l++){
+                    double newVal = m.getElmt(k,l) - faktor*m.getElmt(i,l);
+                    m.setElmt(k, l, newVal);
+                }
+                b[k] = b[k] - faktor*b[i];
+            } 
         }
 
         // Swap Row With All Zero
         int countLowerRowZero = 0;
         for (int i=0; i < m.getRow(); i++) {
             if (m.isRowSPLZero(i)) {
-                swapRow(m, i, m.getRow()-1-countLowerRowZero);
+                int rowswap = m.getRow()-1-countLowerRowZero;
+                swapRow(m, i, rowswap);
+                double temp = b[rowswap];
+                b[rowswap] = b[i];
+                b[i] = temp;
                 countLowerRowZero++;
             }
         }
         return m;
     }
 
-    public static void swapRow(Matrix m, int row1, int row2) {
+    public static void swapRow(Matrix m,int row1, int row2) {
         double[] temp = new double[m.getCol()];
         int n = m.getCol();
         for (int j=0; j < n; j++) {
@@ -78,12 +97,15 @@ public class MatrixUtil {
     }
 
     public static void bSubSol(Matrix m, double[] b, double[] ansArr) {
+        // Memisah matriks augmented
+        m = disaugmented(m, b);
         // Substitusi Balik : mendapat param Matriks telah di forwardElim
         // Determine possible solution of matrix
         int countZeros = 0;
         int n = b.length;
-        for (int j = 0; j < m.getRow(); j++) {
+        for (int j = 0; j < m.getCol(); j++) {
             if (m.getElmt(m.getRow() - 1, j) == 0) {
+                System.out.println(j);
                 countZeros += 1;
             }
         }
@@ -161,8 +183,10 @@ public class MatrixUtil {
             }
             // ansArr terisi jawaban solusi sistem
             for (int i = 0; i < ansArr.length; i++) {
-                System.out.printf("%.2f ", ansArr[i]);
+                System.out.printf("x[%d] = %.2f ", i+1 ,ansArr[i]);
+                System.out.println();
             }
+            System.out.println();
         }
     }
 
@@ -175,6 +199,16 @@ public class MatrixUtil {
                 } else {
                     mNew.setElmt(i ,j, m.getElmt(i,j));
                 }            
+            }
+        }
+        return mNew;
+    }
+
+    public static Matrix disaugmented(Matrix m, double[] b) {
+        Matrix mNew = new Matrix(m.getRow(), m.getCol()-1);
+        for (int i = 0; i < mNew.getRow(); i++) {
+            for (int j = 0; j < mNew.getCol(); j++) {
+                mNew.setElmt(i ,j, m.getElmt(i,j));
             }
         }
         return mNew;
@@ -208,7 +242,7 @@ public class MatrixUtil {
         }
         
 
-        //mulai ngeelim?
+        //mulai ngeelim
         for(int i = 0; i<nRow;i++){
             int col = i;
             boolean isAllZero = true;
@@ -250,7 +284,7 @@ public class MatrixUtil {
             } 
         }
         return m;
-    }
+}
 
     public static double[] balikan(Matrix m, double[] b) {
         double[] ansArr = new double[m.getRow()];
@@ -287,68 +321,88 @@ public class MatrixUtil {
     }
 
     public static double DetRowRed(Matrix m){
-        double det;
-        boolean aRowZero = false;
         int nRow = m.getRow(), nCol = m.getCol();
         int p = 0; // times swapping row
-        if(m.getRow() == 2){
-            det = m.getElmt(0, 0)*m.getElmt(1, 1) - m.getElmt(0, 1)*m.getElmt(1, 0);
+        boolean isAllZero = false;
+        if(nRow == 2){
+            double det = m.getElmt(1, 1)*m.getElmt(0, 0) - m.getElmt(1, 0)*m.getElmt(0, 1);
+            return det;
         }
         else{
-            for(int i = 0; i < nRow;i++){
-                int countzero = 0;
-                for(int j = 0; j < nCol; j++){
-                    if(m.getElmt(i, j) == 0){
-                        countzero++;
+            double det = -999;
+            //cek ada baris 0 semua ga
+            for(int i=0;i<nRow;i++){
+                int countCol = 0;
+                for(int j=0;j<nCol;j++){
+                    if(m.getElmt(i, j)==0){
+                        countCol++;
                     }
                 }
-                if(countzero == nCol){
-                    aRowZero = true;
-                    break;
+                if(countCol==nCol){
+                    isAllZero = true;
                 }
             }
-            if(aRowZero){
-                det = 0;
-            }else{
+            //cek ada kolom 0 semua ga
+            for(int i=0;i<nCol;i++){
+                int countRow = 0;
+                for(int j=0;j<nRow;j++){
+                    if(m.getElmt(j, i)==0){
+                        countRow++;
+                    }
+                }
+                if(countRow==nRow){
+                    isAllZero = true;
+                }
+            }
+            //kalau gada yg sebaris / sekolom 0
+            if(!isAllZero){
+                //swap baris incase di indeks 00 nya 0
                 if(m.getElmt(0, 0)==0){
-                    boolean notZero = false;
-                    int row = 1;
-                    while (notZero == false){
+                    boolean notZero = true;
+                    int row=1;
+                    while (notZero){
                         if(m.getElmt(row, 0)!=0){
-                            notZero = true;
-                        }else{
+                            notZero = false;
+                        }
+                        else{
                             row++;
                         }
                     }
-                    swapRow(m, 0, row);
+                    double temp=0;
+                    for(int i=0; i<nCol;i++){
+                        temp = m.getElmt(row, i);
+                        m.setElmt(row, i, m.getElmt(0,i));
+                        m.setElmt(0, i, temp);
+                    }
                     p++;
                 }
 
+                //bikin matriks eselon baris
                 for(int col=0;col<nCol;col++){
-                    if(col!=nCol-1){
-                        for(int row=col+1;row<nRow;row++){
+                    for(int row=col;row<nRow;row++){
+                        if(row==col){
+                            continue;
+                        }else{
                             double factor = m.getElmt(row, col)/m.getElmt(col, col);
-                            double newval = m.getElmt(row, col)-factor*m.getElmt(col, col);
-                            m.setElmt(row, col, newval);
 
-                            //ubah sebaris
-                            for(int i=0;i<nCol;i++){
-                                double valnew = m.getElmt(row, i)-factor*m.getElmt(row,col);
-                                m.setElmt(row, i, valnew);
+                            for(int j=0;j<nCol;j++){
+                                double newval = m.getElmt(row,j) - factor*m.getElmt(col,j);
+                                m.setElmt(row, j, newval);
                             }
                         }
                     }
                 }
-                det = Math.pow((-1), p);
-                System.out.println("sementara "+det);
-                for(int a=0;a<nRow;a++){
-                    det *= m.getElmt(a, a);
-                    System.out.println("sementara "+det);
+                det = Math.pow(-1, p);
+                for(int rc=0;rc<nRow;rc++){
+                    double multiplier = m.getElmt(rc, rc);
+                    det*=multiplier;
                 }
-                
+                return det;
+            }else{
+                det = 0;
+                return det;
             }
         }
-        return det;
     }
 
     // Inverse Adjoin
