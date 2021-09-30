@@ -286,21 +286,26 @@ public class MatrixUtil {
         return m;
 }
 
-    public static double[] balikan(Matrix m, double[] b) {
-        double[] ansArr = new double[m.getRow()];
+    public static void balikan(Matrix m, double[] b) {
+        double[] ansArr = new double[m.getCol()];
 
         // Lakukan inverse matriks
         Matrix inversed = inverseAdjoin(m);
-
-        // x = inversed*b
-        for (int i = 0; i < m.getRow(); i++) {
-            ansArr[i] = 0;
-            for (int j = 0; j < m.getCol(); j++) {
-                ansArr[i] = ansArr[i] + (inversed.getElmt(i, j) * b[i]);
+        if(inversed==m){
+            System.out.println("Matriks tidak punya balikan sehingga");
+            System.out.println("tidak bisa dicari solusinya");
+        } else if(m.getCol()!=b.length){
+            System.out.println("Matriks tidak punya solusi");
+        } else{
+            // x = inversed*b
+            for (int i = 0; i < m.getRow(); i++) {
+                ansArr[i] = 0;
+                for (int j = 0; j < m.getCol(); j++) {
+                    ansArr[i] = ansArr[i] + (inversed.getElmt(i, j) * b[i]);
+                }
+                System.out.printf("X%d = %.2f ",i, ansArr[i]);
             }
         }
-
-        return ansArr;
     }
 
     public static double[] cramer(Matrix a, double[] b) {
