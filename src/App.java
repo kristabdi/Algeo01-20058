@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.*;
 import java.util.Scanner;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,61 +36,77 @@ public class App {
                     a = inputMatKeyboard(m, n);
                     b = inputArrKeyboard(m);
                 }else{
-                    System.out.println("Masukkan nama file ");
-                    nama = sc.nextLine();
+                    System.out.println("Masukkan nama file :");
+                    nama = scn.nextLine();
+                    nama = scn.nextLine();
                     aug = inputFile(nama);
                     a = matAugmented(aug);
                     b = arrAugmented(aug);
                 }
-
-                if(submenu==1){
-                    a = MatrixUtil.gauss(a, b);
-                    ans = new double[a.getCol()];
-                    MatrixUtil.bSubSol(a, b, ans);
-                    answer = ans.toString();
-                    System.out.println(answer);
-                    System.out.println("Apakah ingin save ke file? (Y/N)");
-                    jawab = scn.next().charAt(0);
-                    if(jawab=='Y'){
-                        WriteToFile(answer);
+                File namef = new File("default.txt");
+                String names ="default.txt";
+                try{
+                    PrintStream o = new PrintStream(names);
+                    if(submenu==1){ //gauss
+                        a = MatrixUtil.gauss(a, b);
+                        ans = new double[a.getCol()];
+                        MatrixUtil.bSubSol(a, b, ans, o);
+                        o.close();
+                        System.out.println("Apakah ingin save ke file? (Y/N)");
+                        jawab = scn.next().charAt(0);
+                        if(jawab=='Y'){
+                            System.out.println("Tulis nama file!");
+                            names = sc.nextLine();
+                            names = sc.nextLine();
+                            File name = new File(names);
+                            namef.renameTo(name);
+                        }else{
+                            namef.delete();
+                        }
                     }
-                }
-                else if(submenu==2){
-                    a = MatrixUtil.gaussJ(a, b);
-                    ans = new double[a.getCol()];
-                    MatrixUtil.bSubSol(a, b, ans);
-                    answer = ans.toString();
-                    answer = makeString(a);
-                    System.out.println(answer);
-                    System.out.println("Apakah ingin save ke file? (Y/N)");
-                    jawab = scn.next().charAt(0);
-                    if(jawab=='Y'){
-                        WriteToFile(answer);
+                    else if(submenu==2){ //gauss-jordan
+                        a = MatrixUtil.gaussJ(a, b);
+                        ans = new double[a.getCol()];
+                        MatrixUtil.bSubSol(a, b, ans, o);
+                        o.close();
+                        System.out.println("Apakah ingin save ke file? (Y/N)");
+                        jawab = scn.next().charAt(0);
+                        if(jawab=='Y'){
+                            System.out.println("Tulis nama file!");
+                            names = sc.nextLine();
+                            names = sc.nextLine();
+                            File name = new File(names);
+                            namef.renameTo(name);;
+                        }else{
+                            namef.delete();
+                        }
                     }
-                }
-                else if(submenu==3){
-                    answer = MatrixUtil.balikan(a, b);
-                    System.out.println(answer);
-                    System.out.println("Apakah ingin save ke file? (Y/N)");
-                    jawab = scn.next().charAt(0);
-                    if(jawab=='Y'){
-                        WriteToFile(answer);
-                    }
-
-                }
-                else{
-                    if(a.isSquare()){
-                        ans = MatrixUtil.cramer(a, b);
-                        answer = ans.toString();
+                    else if(submenu==3){
+                        answer = MatrixUtil.balikan(a, b);
                         System.out.println(answer);
                         System.out.println("Apakah ingin save ke file? (Y/N)");
                         jawab = scn.next().charAt(0);
                         if(jawab=='Y'){
                             WriteToFile(answer);
                         }
-                    }else{
-                        System.out.println("Matriks bukan persegi. Silakan gunakan cara lain!");
+    
                     }
+                    else{
+                        if(a.isSquare()){
+                            ans = MatrixUtil.cramer(a, b);
+                            answer = ans.toString();
+                            System.out.println(answer);
+                            System.out.println("Apakah ingin save ke file? (Y/N)");
+                            jawab = scn.next().charAt(0);
+                            if(jawab=='Y'){
+                                WriteToFile(answer);
+                            }
+                        }else{
+                            System.out.println("Matriks bukan persegi. Silakan gunakan cara lain!");
+                        }
+                    }
+                }catch(IOException e){
+                    System.out.println("An Error occured.");
                 }
                 System.out.println("===============================");
 
@@ -108,7 +124,8 @@ public class App {
                 }
                 else{
                     System.out.println("Masukkan nama file ");
-                    nama = sc.nextLine();
+                    nama = scn.nextLine();
+                    nama = scn.nextLine();
                     aug = inputFile(nama);
                     a = aug;
                 }
@@ -156,7 +173,8 @@ public class App {
                 }
                 else{
                     System.out.println("Masukkan nama file ");
-                    nama = sc.nextLine();
+                    nama = scn.nextLine();
+                    nama = scn.nextLine();
                     aug = inputFile(nama);
                     a = aug;
                 }
@@ -200,7 +218,8 @@ public class App {
                 }
                 else{
                     System.out.println("Masukkan nama file ");
-                    nama = sc.nextLine();
+                    nama = scn.nextLine();
+                    nama = scn.nextLine();
                     aug = inputFile(nama);
                     a = aug;
                 }
@@ -239,7 +258,8 @@ public class App {
                 }
                 else{
                     System.out.println("Masukkan nama file ");
-                    nama = sc.nextLine();
+                    nama = scn.nextLine();
+                    nama = scn.nextLine();
                     aug = inputFile(nama);
                     a = aug;
                     System.out.println("Masukkan nilai y!");
@@ -254,6 +274,13 @@ public class App {
                     for(int i = 0; i < n;i++){
                         x[i] = scn.nextDouble();
                     }
+                }
+                MatrixUtil.regression(a, y, x);
+                answer = "contoh";
+                System.out.println("Apakah ingin save ke file? (Y/N)");
+                jawab = scn.next().charAt(0);
+                if(jawab=='Y'){
+                    WriteToFile(answer);
                 }
                 System.out.println("===============================");
             }
@@ -284,14 +311,15 @@ public class App {
 
     public static void WriteToFile(String m) {
         try {
-            Path curpath = Paths.get("");
-            String nama = curpath.toAbsolutePath().toString();
-            nama += "\\";
-            nama += sc.nextLine();
-            FileWriter myWriter = new FileWriter(nama);
+            System.out.println("Tulis nama file!");
+            String name = sc.nextLine();
+            name = sc.nextLine();
+            Path currentPath = Paths.get(System.getProperty("user.dir"));
+            Path filePath = Paths.get(currentPath.toString(), name);
+            FileWriter myWriter = new FileWriter(filePath.toString());
             myWriter.write(m);
             myWriter.close();
-            System.out.println("Successfully wrote to the "+nama);
+            System.out.println("Successfully wrote to the "+ filePath.toString());
         } catch (IOException e) {
               System.out.println("An error occurred.");
               e.printStackTrace();
@@ -415,7 +443,6 @@ public class App {
             return m1;
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
-            e.printStackTrace();
             return mNot;
         }
     }

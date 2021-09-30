@@ -1,6 +1,7 @@
 package operation;
 import java.lang.Math;
 import base.Matrix;
+import java.io.*;
 
 public class MatrixUtil {
     // Gauss : return Matrix after forwardElim;
@@ -96,7 +97,8 @@ public class MatrixUtil {
         }
     }
 
-    public static void bSubSol(Matrix m, double[] b, double[] ansArr) {
+    public static void bSubSol(Matrix m, double[] b, double[] ansArr, PrintStream o) {
+        PrintStream console = System.out;
         // Memisah matriks augmented
         m = disaugmented(m, b);
         // Substitusi Balik : mendapat param Matriks telah di forwardElim
@@ -105,14 +107,19 @@ public class MatrixUtil {
         int n = b.length;
         for (int j = 0; j < m.getCol(); j++) {
             if (m.getElmt(m.getRow() - 1, j) == 0) {
-                System.out.println(j);
                 countZeros += 1;
             }
         }
 
         if (countZeros == m.getCol() && b[m.getCol() - 1] != 0) {
+            System.setOut(o);
+            System.out.println("SPL tidak memiliki solusi.");
+            System.setOut(console);
             System.out.println("SPL tidak memiliki solusi.");
         } else if (countZeros == m.getCol() && b[m.getCol() - 1] == 0) {
+            System.setOut(o);
+            System.out.println("SPL memiliki tak hingga solusi.");
+            System.setOut(console);
             System.out.println("SPL memiliki tak hingga solusi.");
             // Buat dependensi matrix
             // Matrix depend = new Matrix(m.getCol(), m.getCol());
@@ -161,16 +168,31 @@ public class MatrixUtil {
 
             for (int i = 0; i < m.getCol(); i++) {
                 if (ansStr[i] == "") {
+                    System.setOut(o);
+                    System.out.printf("%.2f ", ansNum[i]);
+                    System.setOut(console);
                     System.out.printf("%.2f ", ansNum[i]);
                 } else if (ansStr[i] != "" && ansNum[i] == 0) {
+                    System.setOut(o);
+                    System.out.printf("%s ", ansStr[i]);
+                    System.setOut(console);
                     System.out.printf("%s ", ansStr[i]);
                 } else {
+                    System.setOut(o);
+                    System.out.printf("%.2f%s ", ansNum[i], ansStr[i]);
+                    System.setOut(console);
                     System.out.printf("%.2f%s ", ansNum[i], ansStr[i]);
                 }
             }
+            System.setOut(o);
+            System.out.println("");
+            System.setOut(console);
             System.out.println("");
 
         } else if ((m.getElmt(m.getRow() - 1, m.getCol() - 1) != 0)) {
+            System.setOut(o);
+            System.out.println("SPL memiliki solusi unik.");
+            System.setOut(console);
             System.out.println("SPL memiliki solusi unik.");
 
             ansArr[m.getRow() - 1] = b[m.getRow() - 1];
@@ -183,9 +205,18 @@ public class MatrixUtil {
             }
             // ansArr terisi jawaban solusi sistem
             for (int i = 0; i < ansArr.length; i++) {
+                System.setOut(o);
                 System.out.printf("x[%d] = %.2f ", i+1 ,ansArr[i]);
+                System.setOut(console);
+                System.out.printf("x[%d] = %.2f ", i+1 ,ansArr[i]);
+                System.setOut(o);
+                System.out.println();
+                System.setOut(console);
                 System.out.println();
             }
+            System.setOut(o);
+            System.out.println();
+            System.setOut(console);
             System.out.println();
         }
     }
