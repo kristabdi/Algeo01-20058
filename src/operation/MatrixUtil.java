@@ -1,87 +1,48 @@
 package operation;
-
-import java.util.Arrays;
-import static java.lang.Math.abs;
+import java.lang.Math;
 import base.Matrix;
 
 public class MatrixUtil {
     // Gauss : return Matrix after forwardElim;
     public static Matrix gauss(Matrix m, double[] b) {
-        Matrix x = new Matrix(m);
-        forwardElim(x, b);
+        Matrix x = augmented(m, b);
+        x = forwardElim(x, b);
         return x;
     }
-    // Pivot
-    // int idx_max = i;
-    // double max  = m.getElmt(idx_max,i);
-    // for (int j=i+1; j < m.getRow(); j++) {
-    //     if (Math.abs(m.getElmt(j,i)) > max) {
-    //         idx_max = j;
-    //         max = m.getElmt(j,i);
-    //     }
-    // }
 
-    // if (idx_max != i) {
-    //     swapRow(m, i, idx_max);
-    // }
-
-    public static void forwardElim(Matrix m, double[] b) {
+    public static Matrix forwardElim(Matrix m, double[] b) {
         /*
          * Ide : membagi semua elemen kolom pertama agar menjadi sama seperti elemen
          * 0,0; mengubah semua elemen menjadi 0 setelah dikalikan pengali dengan
          * dikurangi elemen baris pertama Lalu, substitusi balik, untuk mendapat solusi
-         */
+        */                                               
         // Eliminasi
-        m = augmented(m, b);
-        int h = 0; /* Initialization of the pivot row */
-        int k = 0; /* Initialization of the pivot column */
-        int r = m.getRow();
-        int n = m.getCol();
-        while (h < r && k < n) {
-            /* Find the k-th pivot: */
-            int idx_max = 0;
-            double max = m.getElmt(h, k);
-            for (int i=h; i<r; i++) {
-                double val = m.getElmt(i,k);
-                if (max < Math.abs(val)) {
-                    max = m.getElmt(i,k);
-                    idx_max = i;
-                }
-            }
-
-            if (m.getElmt(idx_max, k)==0) {
-                k++;
-                continue;
-            } else {
-                swapRow(m, h, idx_max);
-                for (int i = h + 1; i < r; i++) {
-                    double multiplier = m.getElmt(i,k) / m.getElmt(h,k);
-                    m.setElmt(i, k, 0);
-                    for (int j = k + 1; j < n; j++) {
-                        double val = m.getElmt(i,j) - m.getElmt(h ,j) * multiplier;
-                        m.setElmt(i, j, val);
+        double t_min = 1e-9;
+            
+        for (int i = 0; i < m.getRow()-1 ; i++) {
+            if (Math.abs(m.getElmt(i,i)) < t_min) {
+                for (int j = i+1; j < m.getRow(); j++) {
+                    if (Math.abs(m.getElmt(j, i)) > Math.abs(m.getElmt(i, i))) {
+                        swapRow(m, i, j);
+                        break;
                     }
                 }
-                h++;
-                k++;
+            }
+            for (int j = i + 1; j < m.getRow(); j++) {
+                if (m.getElmt(j, i) == 0) {
+                    continue;
+                }
+                double multiplier = m.getElmt(i, i) / m.getElmt(j, i);
+
+                for (int k = i; k < m.getCol(); k++) {
+                    double valRowReducted = m.getElmt(i, k) - multiplier * m.getElmt(j, k);
+                    m.setElmt(j, k, valRowReducted);
+                    m.printMatrix();    
+                    System.out.println();
+                }
+                b[j] = b[i] - multiplier * b[j];
             }
         }
-            
-        // for (int i = 0; i <= m.getRow() - 2; i++) {
-        //     for (int j = i + 1; j < m.getRow(); j++) {
-
-        //         if (m.getElmt(j, i) == 0) {
-        //             continue;
-        //         }
-        //         double multiplier = m.getElmt(i, i) / m.getElmt(j, i);
-
-        //         for (int k = i; k < m.getCol(); k++) {
-        //             double valRowReducted = m.getElmt(i, k) - multiplier * m.getElmt(j, k);
-        //             m.setElmt(j, k, valRowReducted);
-        //         }
-        //         b[j] = b[i] - multiplier * b[j];
-        //     }
-        // }
 
         // Konversi ke leading one
         for (int i = 0; i <= m.getRow() - 1; i++) {
@@ -91,17 +52,19 @@ public class MatrixUtil {
                     double rowLeadingOne = m.getElmt(i, j) / pembagi;
                     m.setElmt(i, j, rowLeadingOne);
                 }
+                b[i] /= pembagi;
             }
         }
 
-        // // Swap Row With All Zero
-        // int countLowerRowZero = 0;
-        // for (int i=0; i < m.getRow(); i++) {
-        //     if (m.isRowSPLZero(i)) {
-        //         swapRow(m, i, m.getRow()-1-countLowerRowZero);
-        //         countLowerRowZero++;
-        //     }
-        // }
+        // Swap Row With All Zero
+        int countLowerRowZero = 0;
+        for (int i=0; i < m.getRow(); i++) {
+            if (m.isRowSPLZero(i)) {
+                swapRow(m, i, m.getRow()-1-countLowerRowZero);
+                countLowerRowZero++;
+            }
+        }
+        return m;
     }
 
     public static void swapRow(Matrix m, int row1, int row2) {
@@ -321,6 +284,71 @@ public class MatrixUtil {
             colB += 1;
         }
         return ansArr;
+    }
+
+    public static double DetRowRed(Matrix m){
+        double det;
+        boolean aRowZero = false;
+        int nRow = m.getRow(), nCol = m.getCol();
+        int p = 0; // times swapping row
+        if(m.getRow() == 2){
+            det = m.getElmt(0, 0)*m.getElmt(1, 1) - m.getElmt(0, 1)*m.getElmt(1, 0);
+        }
+        else{
+            for(int i = 0; i < nRow;i++){
+                int countzero = 0;
+                for(int j = 0; j < nCol; j++){
+                    if(m.getElmt(i, j) == 0){
+                        countzero++;
+                    }
+                }
+                if(countzero == nCol){
+                    aRowZero = true;
+                    break;
+                }
+            }
+            if(aRowZero){
+                det = 0;
+            }else{
+                if(m.getElmt(0, 0)==0){
+                    boolean notZero = false;
+                    int row = 1;
+                    while (notZero == false){
+                        if(m.getElmt(row, 0)!=0){
+                            notZero = true;
+                        }else{
+                            row++;
+                        }
+                    }
+                    swapRow(m, 0, row);
+                    p++;
+                }
+
+                for(int col=0;col<nCol;col++){
+                    if(col!=nCol-1){
+                        for(int row=col+1;row<nRow;row++){
+                            double factor = m.getElmt(row, col)/m.getElmt(col, col);
+                            double newval = m.getElmt(row, col)-factor*m.getElmt(col, col);
+                            m.setElmt(row, col, newval);
+
+                            //ubah sebaris
+                            for(int i=0;i<nCol;i++){
+                                double valnew = m.getElmt(row, i)-factor*m.getElmt(row,col);
+                                m.setElmt(row, i, valnew);
+                            }
+                        }
+                    }
+                }
+                det = Math.pow((-1), p);
+                System.out.println("sementara "+det);
+                for(int a=0;a<nRow;a++){
+                    det *= m.getElmt(a, a);
+                    System.out.println("sementara "+det);
+                }
+                
+            }
+        }
+        return det;
     }
 
     // Inverse Adjoin
