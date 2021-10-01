@@ -1,6 +1,16 @@
 # Algeo01-20058
 
 ## Struktur Direktori
+### bin
+Berisi file .class dari hasil compile file .java di folder src
+
+### doc
+Berisi file pdf dari laporan tugas besar
+
+### test
+Berisi file-file .txt yang terdiri dari soal test case dari spesifikasi tugas besar serta
+file-file .txt hasil dari program yang sudah dijalankan. (Terdapat tangkapan layar di laporan
+bagian Eksperimen)
 ### src
 Berisi source code driver, strukdat, maupun operasi Matriks.
 App.java -> driver main.
