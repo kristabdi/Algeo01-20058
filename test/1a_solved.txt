@@ -1,1 +1,1 @@
-Matriks tidak punya balikan sehingga tidak bisa dicari solusinya
+SPL tidak memiliki solusi.

@@ -21,3 +21,49 @@ Menu utama yaitu :
 4. Interpolasi polinom
 5. Regresi linier beganda
 6. Keluar
+
+Saat user memilih menu 1, maka akan keluar 4 sub menu sebagai berikut :
+Pilih sub-menu (metode) :
+1. Metode eliminasi Gauss
+2. Metode eliminasi Gauss-Jordan
+3. Metode matriks balikan
+4. Kaidah Cramer
+
+Saat user memilih menu 2, maka akan keluar 2 sub menu sebagai berikut : 
+Pilih sub-menu (metode) :
+1. Metode reduksi baris
+2. Metode ekspansi kofaktor
+
+Saat user memilih menu 3, maka akan keluar 2 sub menu sebagai berikut :
+Pilih sub-menu (metode) :
+1. Metode reduksi baris
+2. Metode adjoin
+
+Lalu saat user memilih salah satu sub-menu, menu 4, atau menu 5 akan keluar pilihan sebagai berikut :
+Cara input :
+1. Dengan Keyboard
+2. Dari file (augmented matriks)
+
+Jika user memilih 1, maka user akan diminta untuk input matriks atau array dengan keyboard
+Sedangkan jika user memilih 2, maka user akan diminta untuk memberi nama file yang berisi matriks augmented.
+
+## Ruang Perbaikan
+Masih terdapat banyak kekurangan dalam program yang kami buat ini, beberapa hal yang bisa diperbaiki :
+1. GUI
+2. Beberapa fungsi yang mungkin masih kurang atau tidak dapat menyelesaikan semua testcase
+
+## Apresiasi
+1. Kepada Pak Rinaldi Munir beserta jajaran dosen lainnya yang sudah memberi kami tugas besar pertama ini
+2. Kepada kakak-kakak asisten yang membantu para dosen
+3. Kepada orang tua yang kadang bingung mengapa kami berada di depan laptop terus
+4. Kepada semua teman-teman kami yang ada di discord SLONONGBOY yang seringkali menemani kami hingga
+subuh ( dan juga yang mengajak kami bermain Valorant padahal sudah tau bahwa kami sedang mengejar
+deadline)
+5. Kepada laptop yang beberapa hari terakhir ini seperti tidak pernah mati dan masih berjalan dengan baik
+hingga sekarang (meskipun terkadang nge-freeze)
+6. Kepada bot-bot discord yang menemani kami mengerjakan tubes sambil memutarkan lagu-lagu
+
+## Kontak
+Kristo Abdi Wiguna (https://github.com/kristabdi)
+Dimas Shidqi Parikesit (https://github.com/dParikesit)
+Hilda Carissa Widelia (https://github.com/hcarissa)

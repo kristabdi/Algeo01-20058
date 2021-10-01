@@ -648,8 +648,9 @@ public class MatrixUtil {
         }
     }
 
-    public static void regression(Matrix m, double[] y, double[] x) {
+    public static void regression(Matrix m, double[] y, double[] x, PrintStream o) {
         // Matrix spl dengan baris sebanyak k+1, kolom sebanyak k+2 termasuk y
+        PrintStream console = System.out;
         Matrix combin = new Matrix(m.getCol()+1, m.getCol()+1);
         int n = m.getRow();
 
@@ -718,8 +719,18 @@ public class MatrixUtil {
             
         }
         combin.printMatrix();
+        System.setOut(o);
         System.out.println();
+        System.setOut(o);
         System.out.println(persamaan);
+        System.setOut(o);
+        System.out.println(result);
+
+        System.setOut(console);
+        System.out.println();
+        System.setOut(console);
+        System.out.println(persamaan);
+        System.setOut(console);
         System.out.println(result);
     }
 }

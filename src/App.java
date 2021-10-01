@@ -286,9 +286,11 @@ public class App {
                     for(int i = 0; i < m;i++){
                         y[i] = scn.nextDouble();
                     }
+                    System.out.println("Masukkan jumlah x yang akan ditaksir!");
+                    int aaa = sc.nextInt();
                     System.out.println("Masukkan nilai x yang akan ditaksir!");
-                    x = new double[n];
-                    for(int i = 0; i < n;i++){
+                    x = new double[aaa];
+                    for(int i = 0; i < aaa;i++){
                         x[i] = scn.nextDouble();
                     }
                 }
@@ -299,18 +301,35 @@ public class App {
                     aug = inputFile(nama);
                     a = matAugmented(aug);
                     y = arrAugmented(aug);
+                    System.out.println("Masukkan jumlah x yang akan ditaksir!");
+                    int aaa = sc.nextInt();
                     System.out.println("Masukkan nilai x yang akan ditaksir!");
-                    x = new double[a.getRow()];
-                    for(int i = 0; i < a.getRow();i++){
+                    x = new double[aaa];
+                    for(int i = 0; i < aaa;i++){
                         x[i] = scn.nextDouble();
                     }
                 }
-                MatrixUtil.regression(a, y, x);
-                answer = "contoh";
-                System.out.println("Apakah ingin save ke file? (Y/N)");
-                jawab = scn.next().charAt(0);
-                if(jawab=='Y'){
-                    WriteToFile(answer);
+                String names ="default.txt";
+                nama = (Path.of("../test", names)).toString();
+                File namef = new File(nama);
+                try{
+                    PrintStream o = new PrintStream(nama);
+                    MatrixUtil.regression(a, y, x, o);
+                    o.close();
+                    System.out.println("Apakah ingin save ke file? (Y/N)");
+                    jawab = scn.next().charAt(0);
+                    if(jawab=='Y'){
+                        System.out.println("Tulis nama file!");
+                        names = sc.nextLine();
+                        names = sc.nextLine();
+                        Path source = Paths.get("../test/default.txt");
+                        Files.move(source, source.resolveSibling(names));
+                    }else{
+                        Path path = Paths.get("../test/default.txt");
+                        Files.delete(path);
+                    }
+                }catch(IOException e){
+                    System.out.println("An Error occured.");
                 }
                 System.out.println("===============================");
             }
