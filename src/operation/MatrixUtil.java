@@ -58,7 +58,7 @@ public class MatrixUtil {
                 b[i] /= factor;
             }
 
-            //jadiin 00000
+            //jadiin 0
             for(int k = i+1; k <= nRow-1;k++){
                 if(m.getElmt(k,col) == 0){
                     continue;
@@ -317,15 +317,21 @@ public class MatrixUtil {
         return m;
 }
 
-    public static String balikan(Matrix m, double[] b) {
+    public static void balikan(Matrix m, double[] b, PrintStream o) {
         double[] ansArr = new double[m.getCol()];
-        String ans = "";
+        PrintStream console = System.out;
         // Lakukan inverse matriks
         Matrix inversed = inverseAdjoin(m);
-        if(inversed==m){
-            ans = "Matriks tidak punya balikan sehingga\ntidak bisa dicari solusinya";
+        if(isMatrixSama(inversed, m)){
+            System.setOut(o);
+            System.out.println("Matriks tidak punya balikan sehingga tidak bisa dicari solusinya");
+            System.setOut(console);
+            System.out.println("Matriks tidak punya balikan sehingga tidak bisa dicari solusinya");
         } else if(m.getCol()!=b.length){
-            ans = "Matriks tidak punya solusi";
+            System.setOut(o);
+            System.out.println("Matriks tidak punya solusi");
+            System.setOut(console);
+            System.out.println("Matriks tidak punya solusi");
         } else{
             // x = inversed*b
             for (int i = 0; i < m.getRow(); i++) {
@@ -333,14 +339,33 @@ public class MatrixUtil {
                 for (int j = 0; j < m.getCol(); j++) {
                     ansArr[i] = ansArr[i] + (inversed.getElmt(i, j) * b[i]);
                 }
+                System.setOut(o);
+                System.out.printf("X%d = %.2f ", i, ansArr[i]);
+                System.setOut(console);
                 System.out.printf("X%d = %.2f ", i, ansArr[i]);
             }
-            ans = ansArr.toString();
         }
-        return ans;
     }
 
-    public static double[] cramer(Matrix a, double[] b) {
+    public static boolean isMatrixSama(Matrix a, Matrix b){
+        boolean isSama = true;
+        int i = 0;
+        while(isSama && i < a.getRow()){
+            int j = 0;
+            while(isSama && j < a.getCol()){
+                if(a.getElmt(i, j)!=b.getElmt(i, j)){
+                    isSama = false;
+                }else{
+                    j++;
+                }
+            }
+            i++;
+        }
+        return isSama;
+    }
+
+    public static double[] cramer(Matrix a, double[] b, PrintStream o) {
+        PrintStream console = System.out;
         Matrix x = new Matrix(a);
         double[] ansArr = new double[x.getCol()];
         for (int i = 0; i < ansArr.length; i++) {
@@ -348,15 +373,21 @@ public class MatrixUtil {
         }
         if (a.isSquare()) {
             double detX = x.getDeterminantCofactor();
-            int colB = 0;
-            for (int i = 0; i < x.getCol(); i++) {
-                Matrix temp = new Matrix(x);
-                for (int p = 0; p < x.getCol(); p++) {
-                    temp.setElmt(p, colB, b[p]);
+            if(detX == 0){
+                System.setOut(o);
+                System.out.println("Determinan 0, tidak dapat ditemukan solusinya");
+                System.setOut(console);
+                System.out.println("Determinan 0, tidak dapat ditemukan solusinya");
+            }else{
+                int colB = 0;
+                for (int i = 0; i < x.getCol(); i++) {
+                    Matrix temp = new Matrix(x);
+                    for (int p = 0; p < x.getCol(); p++) {
+                        temp.setElmt(p, colB, b[p]);
+                    }
+                    ansArr[i] = temp.getDeterminantCofactor() / detX;
+                    colB += 1;
                 }
-                ansArr[i] = temp.getDeterminantCofactor() / detX;
-                temp.printMatrix();
-                colB += 1;
             }
         }
         return ansArr;
@@ -555,9 +586,9 @@ public class MatrixUtil {
         return inversedMatrix;
     }
 
-    public static String polynomInterpolation(Matrix m, double[] k) {
+    public static void polynomInterpolation(Matrix m, double[] k, PrintStream o) {
         // Array penyimpan y predict
-        String ypredicts = "";
+        PrintStream console = System.out;
         double[] ypredict = new double[k.length];
 
         // Buat matrix spl yang berisi matrix persamaan interpolasi polinom
@@ -601,17 +632,20 @@ public class MatrixUtil {
                 persamaan = persamaan + temp + "x^" + i;
             }
         }
-
+        System.setOut(o);
+        System.out.printf("P(%d) = %s\n", n, persamaan);
+        System.setOut(console);
         System.out.printf("P(%d) = %s\n", n, persamaan);
         for (int i = 0; i < ypredict.length; i++) {
             ypredict[i] = 0;
             for (int j = 0; j < n; j++) {
                 ypredict[i] = ypredict[i] + (konstanta[j] * Math.pow(k[i], j));
             }
+            System.setOut(o);
+            System.out.printf("P(%.2f) = %.4f\n", k[i], ypredict[i]);
+            System.setOut(console);
             System.out.printf("P(%.2f) = %.4f\n", k[i], ypredict[i]);
         }
-        ypredicts = ypredict.toString();
-        return ypredicts;
     }
 
     public static void regression(Matrix m, double[] y, double[] x) {

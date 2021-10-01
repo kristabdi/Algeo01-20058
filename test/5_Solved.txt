@@ -1,0 +1,6 @@
+SPL memiliki solusi unik.
+x[1] = 14.44 
+x[2] = 7.22 
+x[3] = 10.00 
+x[4] = 0.00 
+

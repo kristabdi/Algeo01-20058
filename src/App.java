@@ -63,7 +63,8 @@ public class App {
                             Path source = Paths.get("../test/default.txt");
                             Files.move(source, source.resolveSibling(names));
                         }else{
-                            namef.delete();
+                            Path path = Paths.get("../test/default.txt");
+                            Files.delete(path);
                         }
                     }
                     else if(submenu==2){ //gauss-jordan
@@ -77,31 +78,49 @@ public class App {
                             System.out.println("Tulis nama file!");
                             names = sc.nextLine();
                             names = sc.nextLine();
-                            File name = new File(names);
-                            namef.renameTo(name);;
+                            Path source = Paths.get("../test/default.txt");
+                            Files.move(source, source.resolveSibling(names));
                         }else{
-                            namef.delete();
+                            Path path = Paths.get("../test/default.txt");
+                            Files.delete(path);
                         }
                     }
                     else if(submenu==3){
-                        answer = MatrixUtil.balikan(a, b);
-                        System.out.println(answer);
-                        System.out.println("Apakah ingin save ke file? (Y/N)");
-                        jawab = scn.next().charAt(0);
-                        if(jawab=='Y'){
-                            WriteToFile(answer);
+                        if(a.isSquare()){
+                            MatrixUtil.balikan(a, b, o);
+                            o.close();
+                            System.out.println("Apakah ingin save ke file? (Y/N)");
+                            jawab = scn.next().charAt(0);
+                            if(jawab=='Y'){
+                                System.out.println("Tulis nama file!");
+                                names = sc.nextLine();
+                                names = sc.nextLine();
+                                Path source = Paths.get("../test/default.txt");
+                                Files.move(source, source.resolveSibling(names));
+                            }else{
+                                Path path = Paths.get("../test/default.txt");
+                                Files.delete(path);
+                            }
+                        }else{
+                            System.out.println("Matriks bukan persegi. Silakan gunakan cara lain!");
                         }
     
                     }
                     else{
                         if(a.isSquare()){
-                            ans = MatrixUtil.cramer(a, b);
-                            answer = ans.toString();
-                            System.out.println(answer);
+                            ans = MatrixUtil.cramer(a, b, o);
+                            o.close();
                             System.out.println("Apakah ingin save ke file? (Y/N)");
                             jawab = scn.next().charAt(0);
                             if(jawab=='Y'){
-                                WriteToFile(answer);
+                                System.out.println("Tulis nama file!");
+                                names = sc.nextLine();
+                                names = sc.nextLine();
+                                Path source = Paths.get("../test/default.txt");
+                                Files.move(source, source.resolveSibling(names));
+                            }else{
+                                Path path = Paths.get("../test/default.txt");
+                                Files.delete(path);
                             }
                         }else{
                             System.out.println("Matriks bukan persegi. Silakan gunakan cara lain!");
@@ -118,11 +137,9 @@ public class App {
                 submenu = scn.nextInt();
                 input = PilihInput();
                 if(input == 1){
-                    System.out.println("Masukkan baris matriks");
+                    System.out.println("Masukkan baris dan kolom matriks");
                     m = scn.nextInt();
-                    System.out.println("Masukkan kolom matriks");
-                    n = scn.nextInt();
-                    a = inputMatKeyboard(m, n);
+                    a = inputMatKeyboard(m, m);
                 }
                 else{
                     System.out.println("Masukkan nama file ");
@@ -227,15 +244,32 @@ public class App {
                 }
                 System.out.println("Masukkan jumlah titik yang akan ditaksir nilai fungsinya");
                 n = scn.nextInt();
+                System.out.println("Masukkan titik-titik yang akan ditaksir nilai fungsinya");
                 double[] xk = new double[n];
                 for(int i = 0;i<n;i++){
                     xk[i] = scn.nextDouble();
                 }
-                answer = MatrixUtil.polynomInterpolation(a, xk);
-                System.out.println("Apakah ingin save ke file? (Y/N)");
-                jawab = scn.next().charAt(0);
-                if(jawab=='Y'){
-                    WriteToFile(answer);
+                String names ="default.txt";
+                nama = (Path.of("../test", names)).toString();
+                File namef = new File(nama);
+                try{
+                    PrintStream o = new PrintStream(nama);
+                    MatrixUtil.polynomInterpolation(a, xk, o);
+                    o.close();
+                    System.out.println("Apakah ingin save ke file? (Y/N)");
+                    jawab = scn.next().charAt(0);
+                    if(jawab=='Y'){
+                        System.out.println("Tulis nama file!");
+                        names = sc.nextLine();
+                        names = sc.nextLine();
+                        Path source = Paths.get("../test/default.txt");
+                        Files.move(source, source.resolveSibling(names));
+                    }else{
+                        Path path = Paths.get("../test/default.txt");
+                        Files.delete(path);
+                    }
+                }catch(IOException e){
+                    System.out.println("An Error occured.");
                 }
                 System.out.println("===============================");
             }
