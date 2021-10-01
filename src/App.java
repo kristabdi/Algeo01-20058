@@ -263,17 +263,11 @@ public class App {
                     nama = scn.nextLine();
                     nama = scn.nextLine();
                     aug = inputFile(nama);
-                    a = aug;
-                    System.out.println("Masukkan nilai y!");
-                    m = a.getRow();
-                    n = a.getCol();
-                    y = new double[m];
-                    for(int i = 0; i < m;i++){
-                        y[i] = scn.nextDouble();
-                    }
+                    a = matAugmented(aug);
+                    y = arrAugmented(aug);
                     System.out.println("Masukkan nilai x yang akan ditaksir!");
-                    x = new double[n];
-                    for(int i = 0; i < n;i++){
+                    x = new double[a.getRow()];
+                    for(int i = 0; i < a.getRow();i++){
                         x[i] = scn.nextDouble();
                     }
                 }
